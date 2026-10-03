@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import MarketplaceLayout from '@/Layouts/MarketplaceLayout.vue';
+import PromoPopup from '@/Components/PromoPopup.vue';
 import { eur, num, statusLabel, statusClass } from '@/lib/format.js';
 import { t } from '@/lib/i18n.js';
 
@@ -127,6 +128,7 @@ const destroy = (row) => {
                 </div>
             </main>
         </div>
+        <PromoPopup />
     </MarketplaceLayout>
 </template>
 

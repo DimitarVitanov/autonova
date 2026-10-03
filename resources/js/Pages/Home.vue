@@ -121,7 +121,9 @@ const newestList = computed(() => props.newest?.data ?? []);
                 <div class="hero-copy">
                     <div class="eyebrow"><span class="dot"></span> {{ t('hero.eyebrow', 'MK · Vehicle marketplace · Est. 2026') }}</div>
                     <h1 class="hero-title">{{ t('hero.title_1', 'Find your next') }}<br /><span class="accent">{{ t('hero.title_2', 'vehicle.') }}</span></h1>
+                    <!-- hidden for now (client request)
                     <p class="hero-sub">{{ t('hero.sub', 'Cars, motorcycles, vans, trucks, machinery and trailers — from verified dealers and private sellers. Real photos, no duplicate listings.') }}</p>
+                    -->
 
                     <div class="hero-stats">
                         <div class="hero-stat">
@@ -336,6 +338,7 @@ const newestList = computed(() => props.newest?.data ?? []);
     background: var(--color-ink);
     color: var(--color-on-ink);
     padding-bottom: 40px;
+    overflow-x: clip; /* the showcase glow bleeds past the frame; keep it from widening the page on mobile */
 }
 .hero-glow {
     position: absolute; inset: 0; pointer-events: none; overflow: hidden;
@@ -400,8 +403,8 @@ const newestList = computed(() => props.newest?.data ?? []);
 .search-bar {
     display: flex; flex-wrap: wrap; align-items: stretch; gap: 4px;
     padding: 8px; border-radius: var(--radius-lg);
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--color-ink-line-2);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.26);
     backdrop-filter: blur(14px);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
@@ -598,7 +601,7 @@ const newestList = computed(() => props.newest?.data ?? []);
     .hero-stat { flex: 1 1 28%; min-width: 0; }
     .hero-stat-num { font-size: 27px; }
     .hero-stat-label { font-size: 11px; }
-    .search-field { flex-basis: 100%; }
+    .search-field { flex-basis: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.22); border-radius: 0; }
     .search-field + .search-field::before { display: none; }
     .search-submit { flex-basis: 100%; margin-top: 4px; }
     .grid-cards, .dealers-grid { grid-template-columns: 1fr 1fr; }

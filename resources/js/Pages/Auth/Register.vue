@@ -5,7 +5,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { t } from '@/lib/i18n.js';
 
-const cities = ['Skopje', 'Bitola', 'Kumanovo', 'Prilep', 'Tetovo', 'Veles', 'Ohrid', 'Gostivar'];
+defineProps({ cities: { type: Array, default: () => [] } });
 
 const form = useForm({
     name: '',

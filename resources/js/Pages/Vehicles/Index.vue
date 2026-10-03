@@ -142,5 +142,11 @@ const pageLinks = computed(() => props.vehicles.meta?.links ?? []);
     .sidebar-col.open { display: block; margin-bottom: 24px; }
     .filters-toggle { display: inline-flex; }
 }
-@media (max-width: 560px) { .cards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    /* sort + view toggle take their own row and shrink, instead of pushing the page wider */
+    .results-tools { margin-left: 0; width: 100%; min-width: 0; }
+    .sort-select { flex: 1; min-width: 0; }
+    .results-tools .seg { flex: none; }
+}
 </style>

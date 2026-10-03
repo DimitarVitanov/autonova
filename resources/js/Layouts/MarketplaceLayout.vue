@@ -2,7 +2,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Logo from '@/Components/Logo.vue';
-import PromoPopup from '@/Components/PromoPopup.vue';
 import { t } from '@/lib/i18n.js';
 
 const page = usePage();
@@ -144,9 +143,6 @@ watch(menuOpen, (open) => {
             </div>
         </header>
 
-        <!-- Marketing promo popup (appears a few seconds after load, once per visitor) -->
-        <PromoPopup />
-
         <!-- Flash toast -->
         <Transition name="toast">
             <div v-if="toast" class="toast" :class="`toast-${toast.type}`">{{ toast.message }}</div>
@@ -177,7 +173,7 @@ watch(menuOpen, (open) => {
                     <span class="mono">{{ t('footer.company', 'Company') }}</span>
                     <span class="link-quiet">{{ t('footer.about', 'About AutoNova') }}</span>
                     <span class="link-quiet">{{ t('footer.terms', 'Terms & privacy') }}</span>
-                    <span class="text-muted footer-lang">Македонски · Shqip · English</span>
+                    <span class="text-muted footer-lang">Македонски · English</span>
                 </div>
             </div>
             <div class="wrap footer-bottom">
@@ -345,6 +341,12 @@ watch(menuOpen, (open) => {
     /* fold the desktop actions into the drawer */
     .header-actions > .chip, .header-actions > .menu, .header-actions > .btn { display: none; }
     .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 360px) {
+    /* smallest phones: keep logo + language switch + burger inside the viewport */
+    .header-inner { padding: 12px 14px; gap: 10px; }
+    .header-actions { gap: 6px; }
+    .lang-opt { padding: 5px 7px; }
 }
 @media (max-width: 560px) {
     .footer-inner { grid-template-columns: 1fr; }

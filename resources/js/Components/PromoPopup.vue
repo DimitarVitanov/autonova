@@ -1,7 +1,7 @@
 <script setup>
 /**
- * PromoPopup — site-wide marketing popup that fades in a few seconds after the
- * page loads. On brand with the "dark luxury showroom" system (ink gradient,
+ * PromoPopup — marketing popup (mounted on the Dashboard) that fades in a few
+ * seconds after the page loads. On brand with the "dark luxury showroom" system (ink gradient,
  * accent glow, Archivo, pill buttons). Promotes the PRO dealer package.
  *
  * Shows once per visitor (localStorage guard + cooldown) so it never nags, and
