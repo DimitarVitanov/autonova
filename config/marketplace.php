@@ -70,6 +70,8 @@ return [
         'Skopje', 'Bitola', 'Kumanovo', 'Prilep', 'Tetovo', 'Veles', 'Ohrid',
         'Gostivar', 'Štip', 'Strumica', 'Kavadarci', 'Kočani', 'Kičevo', 'Struga',
         'Radoviš', 'Gevgelija', 'Debar', 'Kriva Palanka', 'Sveti Nikole', 'Negotino',
+        'Berovo', 'Bogdanci', 'Valandovo', 'Vinica', 'Delčevo', 'Demir Kapija', 'Demir Hisar',
+        'Kratovo', 'Kruševo', 'Makedonski Brod', 'Makedonska Kamenica', 'Pehčevo', 'Probištip', 'Resen',
     ],
 
     'sorts' => [

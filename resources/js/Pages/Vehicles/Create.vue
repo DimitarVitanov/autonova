@@ -202,7 +202,7 @@ const errorList = computed(() => Object.values(form.errors));
 .sell { padding: 32px 24px 64px; max-width: 1000px; }
 .sell-title { margin: 0 0 6px; }
 
-.steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 26px 0 24px; }
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin: 26px 0 24px; }
 .step {
     text-align: left; padding: 12px 14px;
     border: 1px solid var(--color-hairline);
@@ -295,8 +295,16 @@ const errorList = computed(() => Object.values(form.errors));
 
 @media (max-width: 800px) {
     .form-grid, .cat-choices, .promo-grid { grid-template-columns: 1fr 1fr; }
-    .steps { grid-template-columns: repeat(5, 1fr); }
     .step-label { font-size: 11px; }
 }
-@media (max-width: 520px) { .form-grid, .cat-choices, .promo-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) {
+    .form-grid, .cat-choices, .promo-grid { grid-template-columns: 1fr; }
+    .sell { padding-left: 18px; padding-right: 18px; }
+    /* phones: only the current step shows its label, the rest collapse to their number */
+    .steps { display: flex; gap: 6px; }
+    .step { flex: none; min-width: 0; padding: 10px 12px; }
+    .step.active { flex: 1; }
+    .step:not(.active) .step-label { display: none; }
+    .step-label { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
 </style>

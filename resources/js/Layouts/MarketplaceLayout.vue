@@ -185,7 +185,7 @@ watch(menuOpen, (open) => {
 </template>
 
 <style scoped>
-.app { min-height: 100vh; display: flex; flex-direction: column; }
+.app { min-height: 100vh; display: flex; flex-direction: column; overflow-x: clip; /* nothing may widen the page on mobile */ }
 
 /* Header — dark showroom bar; same ink + dark-red glow as the hero so it blends */
 .header {
