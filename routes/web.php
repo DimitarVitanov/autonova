@@ -53,9 +53,9 @@ Route::get('/api/versions', [CatalogController::class, 'versions'])->name('api.v
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Listings
-    Route::get('/sell', [VehicleController::class, 'create'])->name('vehicles.create');
-    Route::post('/vehicles', [VehicleController::class, 'store'])->name('vehicles.store');
+    // Listings (posting needs a confirmed email address)
+    Route::get('/sell', [VehicleController::class, 'create'])->middleware('verified')->name('vehicles.create');
+    Route::post('/vehicles', [VehicleController::class, 'store'])->middleware('verified')->name('vehicles.store');
     Route::get('/vehicles/{vehicle:slug}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit');
     Route::put('/vehicles/{vehicle:slug}', [VehicleController::class, 'update'])->name('vehicles.update');
     Route::delete('/vehicles/{vehicle:slug}', [VehicleController::class, 'destroy'])->name('vehicles.destroy');
@@ -68,8 +68,8 @@ Route::middleware('auth')->group(function () {
 
     // Messaging
     Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
-    Route::post('/vehicle/{vehicle:slug}/contact', [ConversationController::class, 'start'])->name('conversations.start');
-    Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'message'])->name('conversations.message');
+    Route::post('/vehicle/{vehicle:slug}/contact', [ConversationController::class, 'start'])->middleware('verified')->name('conversations.start');
+    Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'message'])->middleware('verified')->name('conversations.message');
 
     // Profile (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

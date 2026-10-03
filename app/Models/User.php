@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordNotification;
+use App\Notifications\VerifyEmailNotification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -9,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -63,6 +66,20 @@ class User extends Authenticatable
     public function savedSearches(): HasMany
     {
         return $this->hasMany(SavedSearch::class);
+    }
+
+    // ---- Branded account emails ---------------------------------------------
+
+    public function sendEmailVerificationNotification(): void
+    {
+        // A mail outage must not turn registration into an error page; the
+        // user can ask for the link again from the verification screen.
+        rescue(fn () => $this->notify(new VerifyEmailNotification));
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     // ---- Roles & helpers ---------------------------------------------------

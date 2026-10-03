@@ -110,6 +110,12 @@ return [
     |
     */
 
+    /*
+    | Where site notifications (e.g. "new registration") are delivered.
+    | Leave MAIL_ADMIN_ADDRESS empty to turn them off.
+    */
+    'admin_address' => env('MAIL_ADMIN_ADDRESS'),
+
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
