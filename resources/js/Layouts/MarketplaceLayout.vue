@@ -78,7 +78,7 @@ watch(menuOpen, (open) => {
                         </button>
                     </div>
                     <Link :href="route('vehicles.index')" class="nav-link">{{ t('nav.vehicles', 'Vehicles') }}</Link>
-                    <Link :href="route('dealers.index')" class="nav-link">{{ t('nav.dealers', 'Dealers') }}</Link>
+                    <Link :href="route('dealers.index')" class="nav-link nav-spot">{{ t('nav.dealers', 'Dealers') }}</Link>
                     <Link :href="route('pricing')" class="nav-link">{{ t('nav.packages', 'Packages') }}</Link>
 
                     <!-- Actions inside the mobile burger menu -->
@@ -208,6 +208,33 @@ watch(menuOpen, (open) => {
     /* reset UA button styling so <button class="nav-link"> (Log out) isn't a white box on the dark drawer */
     appearance: none; -webkit-appearance: none; background: transparent; border: 0; cursor: pointer; text-align: left; }
 .nav-link:hover { color: #fff; background: rgba(255, 255, 255, 0.07); }
+
+/* Spotlighted nav item (Dealers): gold, pulsing ring, arrows nudging in from both sides */
+.nav-spot {
+    position: relative; margin: 0 22px; padding: 8px 18px;
+    color: #ffc247; font-weight: 800;
+    background: rgba(255, 194, 71, 0.12);
+    border: 1px solid rgba(255, 194, 71, 0.55);
+    animation: nav-spot-pulse 1.8s ease-out infinite;
+}
+.nav-spot:hover { color: #14161b; background: #ffc247; }
+.nav-spot::before, .nav-spot::after {
+    position: absolute; top: 50%; margin-top: -11px;
+    font-size: 18px; line-height: 22px; font-weight: 800; color: #ffc247;
+    pointer-events: none;
+}
+.nav-spot::before { content: '»'; right: 100%; margin-right: 5px; animation: nav-spot-left 0.9s ease-in-out infinite; }
+.nav-spot::after { content: '«'; left: 100%; margin-left: 5px; animation: nav-spot-right 0.9s ease-in-out infinite; }
+@keyframes nav-spot-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0.6); }
+    70% { box-shadow: 0 0 0 12px rgba(255, 194, 71, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0); }
+}
+@keyframes nav-spot-left { 0%, 100% { transform: translateX(-5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
+@keyframes nav-spot-right { 0%, 100% { transform: translateX(5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+    .nav-spot, .nav-spot::before, .nav-spot::after { animation: none; }
+}
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .lang-switch { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--color-ink-line-2); border-radius: var(--radius-pill); background: rgba(255, 255, 255, 0.04); }
 .lang-opt { font: 800 11px var(--font-heading); color: var(--color-on-ink-muted); padding: 5px 9px; border-radius: var(--radius-pill); letter-spacing: 0.04em; line-height: 1; }
@@ -309,6 +336,9 @@ watch(menuOpen, (open) => {
     .drawer-close:hover { background: rgba(255, 255, 255, 0.14); transform: rotate(90deg); }
 
     .nav-links .nav-link { width: 100%; padding: 15px 22px; border-bottom: 1px solid var(--color-ink-line); border-radius: 0; }
+    .nav-links .nav-spot { margin: 0; border-width: 0 0 1px; animation: none; background: rgba(255, 194, 71, 0.12); }
+    .nav-links .nav-spot::before { position: static; display: inline-block; margin: 0 8px 0 0; }
+    .nav-links .nav-spot::after { position: static; display: inline-block; margin: 0 0 0 8px; }
     .nav-mobile-actions { display: flex; flex-direction: column; width: 100%; border-top: 3px solid var(--color-ink); margin-top: 4px; }
     .nav-mobile-actions .nav-link.accent { color: var(--color-accent); }
     .burger { display: flex; }
