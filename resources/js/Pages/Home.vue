@@ -165,8 +165,12 @@ const newestList = computed(() => props.newest?.data ?? []);
                     </div>
                     -->
 
-                    <!-- Dealers shortcut: phones only, where the header's gold Dealers link is tucked into the menu -->
+                    <!-- Phones only: listings count + Dealers shortcut (the header's gold Dealers link is tucked into the menu there) -->
                     <div class="hero-dealers-row">
+                        <div class="hero-stat">
+                            <div class="hero-stat-num">{{ num(stats.vehicles) }}</div>
+                            <div class="hero-stat-label">{{ t('hero.stat_vehicles', 'Vehicles listed') }}</div>
+                        </div>
                         <Link :href="route('dealers.index')" class="hero-dealers">{{ t('nav.dealers', 'Dealers') }}</Link>
                     </div>
                 </div>
@@ -448,7 +452,7 @@ const newestList = computed(() => props.newest?.data ?? []);
 }
 .hero-sub { font-size: 17px; line-height: 1.6; max-width: 46ch; margin: 0; color: var(--color-on-ink-soft); }
 /* Gold pulsing Dealers button — same look as the header's, shown on phones only */
-.hero-dealers-row { display: none; margin-top: 26px; padding: 0 26px; }
+.hero-dealers-row { display: none; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; padding-right: 26px; }
 .hero-dealers {
     position: relative; display: inline-flex; align-items: center; padding: 11px 24px;
     color: #ffc247; font: 800 15px var(--font-heading); text-decoration: none;
@@ -470,7 +474,7 @@ const newestList = computed(() => props.newest?.data ?? []);
 }
 @keyframes hero-dealers-left { 0%, 100% { transform: translateX(-5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
 @keyframes hero-dealers-right { 0%, 100% { transform: translateX(5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
-@media (max-width: 900px) { .hero-dealers-row { display: block; } }
+@media (max-width: 900px) { .hero-dealers-row { display: flex; } }
 @media (prefers-reduced-motion: reduce) {
     .hero-dealers, .hero-dealers::before, .hero-dealers::after { animation: none; }
 }
@@ -724,7 +728,6 @@ const newestList = computed(() => props.newest?.data ?? []);
     .hero-title { font-size: clamp(26px, 7.4vw, 40px); overflow-wrap: break-word; word-break: break-word; }
     .hero-sub { font-size: 15px; }
     .hero-stats { gap: 12px 16px; flex-wrap: wrap; }
-    .hero-stat { flex: 1 1 28%; min-width: 0; }
     .hero-stat-num { font-size: 27px; }
     .hero-stat-label { font-size: 11px; }
     .search-field { flex-basis: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.22); border-radius: 0; }
