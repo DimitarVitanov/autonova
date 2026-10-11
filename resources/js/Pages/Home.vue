@@ -85,7 +85,16 @@ const bodyTypes = computed(() => bodyTypesByCat[search.category] ?? bodyTypesByC
 
 const favSet = computed(() => new Set(props.favoriteIds ?? []));
 
-const search = reactive({ category: 'cars', make_id: '', car_model_id: '', version: '', price_max: '', city: '' });
+const search = reactive({
+    category: 'cars', make_id: '', car_model_id: '', version: '', price_max: '', city: '',
+    year_min: '', year_max: '', mileage_max: '', fuel: '', transmission: '', seller_type: '',
+});
+
+// Extra filters, tucked behind the "Filters" button next to Search.
+const extraKeys = ['year_min', 'year_max', 'mileage_max', 'fuel', 'transmission', 'seller_type'];
+const extraOpen = ref(false);
+const extraCount = computed(() => extraKeys.filter((k) => search[k] !== '').length);
+const mileageSteps = [10000, 25000, 50000, 75000, 100000, 150000, 200000, 250000, 300000];
 
 watch(() => search.category, () => {
     search.make_id = '';
@@ -183,10 +192,60 @@ const newestList = computed(() => props.newest?.data ?? []);
                             <option v-for="c in options.cities" :key="c" :value="c">{{ t('city.' + c, c) }}</option>
                         </select>
                     </label>
+                    <button type="button" class="search-more" :class="{ open: extraOpen }" :aria-expanded="extraOpen" @click="extraOpen = !extraOpen">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7h10m4 0h2M4 17h2m4 0h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.4" stroke="currentColor" stroke-width="2.2"/><circle cx="8" cy="17" r="2.4" stroke="currentColor" stroke-width="2.2"/></svg>
+                        <span>{{ t('idx.filters', 'Filters') }}</span>
+                        <span v-if="extraCount" class="search-more-count">{{ extraCount }}</span>
+                    </button>
                     <button type="submit" class="search-submit">
                         <span>{{ t('common.search', 'Search') }}</span>
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
+                    <div v-show="extraOpen" class="search-extra">
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.year', 'Year') }} {{ t('flt.from', 'from') }}</span>
+                            <select v-model="search.year_min" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option v-for="y in options.years" :key="y" :value="y">{{ y }}</option>
+                            </select>
+                        </label>
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.year', 'Year') }} {{ t('flt.to', 'to') }}</span>
+                            <select v-model="search.year_max" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option v-for="y in options.years" :key="y" :value="y">{{ y }}</option>
+                            </select>
+                        </label>
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.mileage_max', 'Mileage up to (km)') }}</span>
+                            <select v-model="search.mileage_max" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option v-for="m in mileageSteps" :key="m" :value="m">{{ t('search.up_to', 'up to') }} {{ num(m) }} km</option>
+                            </select>
+                        </label>
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.fuel', 'Fuel') }}</span>
+                            <select v-model="search.fuel" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option v-for="o in options.fuels" :key="o.value" :value="o.value">{{ t('enum.' + o.label, o.label) }}</option>
+                            </select>
+                        </label>
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.transmission', 'Transmission') }}</span>
+                            <select v-model="search.transmission" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option v-for="o in options.transmissions" :key="o.value" :value="o.value">{{ t('enum.' + o.label, o.label) }}</option>
+                            </select>
+                        </label>
+                        <label class="search-field">
+                            <span class="search-label">{{ t('flt.seller', 'Seller') }}</span>
+                            <select v-model="search.seller_type" class="search-select">
+                                <option value="">{{ t('flt.any', 'Any') }}</option>
+                                <option value="dealer">{{ t('flt.dealer', 'Dealer') }}</option>
+                                <option value="private">{{ t('flt.private', 'Private') }}</option>
+                            </select>
+                        </label>
+                    </div>
                 </form>
 
                 <div class="hero-chips">
@@ -427,6 +486,24 @@ const newestList = computed(() => props.newest?.data ?? []);
 .search-select:focus-visible { outline: none; }
 .search-select option { color: var(--color-text); }
 .search-select::placeholder { color: var(--color-on-ink-muted); font-weight: 700; }
+.search-more {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0 20px; min-height: 62px; cursor: pointer; color: #fff;
+    background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.26); border-radius: var(--radius-md);
+    font: 800 14px var(--font-heading);
+    transition: background .16s var(--ease), border-color .16s var(--ease);
+}
+.search-more:hover, .search-more.open { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.45); }
+.search-more-count {
+    min-width: 20px; height: 20px; padding: 0 6px; display: grid; place-items: center;
+    background: var(--color-accent); border-radius: var(--radius-pill); font-size: 11px;
+}
+.search-extra {
+    flex: 1 1 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px;
+    margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--color-ink-line);
+}
+.search-extra .search-field::before { display: none; }
+@media (max-width: 1100px) { .search-extra { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .search-submit {
     flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     border: 0; background: var(--color-accent); color: #fff; cursor: pointer;
@@ -606,7 +683,9 @@ const newestList = computed(() => props.newest?.data ?? []);
     .hero-stat-label { font-size: 11px; }
     .search-field { flex-basis: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.22); border-radius: 0; }
     .search-field + .search-field::before { display: none; }
-    .search-submit { flex-basis: 100%; margin-top: 4px; }
+    .search-more { flex-basis: 100%; order: 2; min-height: 52px; margin-top: 8px; }
+    .search-submit { flex-basis: 100%; order: 3; margin-top: 4px; }
+    .search-extra { order: 1; grid-template-columns: 1fr 1fr; gap: 0 8px; margin-top: 0; padding-top: 0; border-top: 0; }
     .grid-cards, .dealers-grid { grid-template-columns: 1fr 1fr; }
     .cats-grid { grid-template-columns: 1fr; } /* horizontal tiles: single column on phones so the count never clips */
     .hero-chips { display: none; }
