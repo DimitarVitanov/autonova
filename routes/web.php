@@ -42,6 +42,7 @@ Route::get('/locale/{locale}', function (string $locale) {
 
 // Dependent-select helpers
 Route::get('/api/makes', [CatalogController::class, 'makes'])->name('api.makes');
+Route::get('/api/catalog', [CatalogController::class, 'catalog'])->name('api.catalog');
 Route::get('/api/models', [CatalogController::class, 'models'])->name('api.models');
 Route::get('/api/versions', [CatalogController::class, 'versions'])->name('api.versions');
 

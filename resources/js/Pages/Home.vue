@@ -6,6 +6,7 @@ import VehicleCard from '@/Components/VehicleCard.vue';
 import CategoryIcon from '@/Components/CategoryIcon.vue';
 import VehicleGlyph from '@/Components/VehicleGlyph.vue';
 import BrandLogo from '@/Components/BrandLogo.vue';
+import MakeModelSelect from '@/Components/MakeModelSelect.vue';
 import { eur, num } from '@/lib/format.js';
 import { t } from '@/lib/i18n.js';
 
@@ -84,14 +85,15 @@ const bodyTypes = computed(() => bodyTypesByCat[search.category] ?? bodyTypesByC
 
 const favSet = computed(() => new Set(props.favoriteIds ?? []));
 
-const search = reactive({ category: 'cars', make_id: '', price_max: '', city: '' });
-const makes = ref(props.options.makes ?? []);
+const search = reactive({ category: 'cars', make_id: '', car_model_id: '', price_max: '', city: '' });
 
-watch(() => search.category, async (slug) => {
+watch(() => search.category, () => {
     search.make_id = '';
-    const { data } = await window.axios.get(route('api.makes'), { params: { category: slug } });
-    makes.value = data;
+    search.car_model_id = '';
 });
+
+// Preset ceilings for the hero's max-price dropdown (EUR).
+const priceSteps = [1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000, 30000, 40000, 50000, 75000, 100000];
 
 const submit = () => {
     const params = Object.fromEntries(Object.entries(search).filter(([, v]) => v !== '' && v !== null));
@@ -162,16 +164,16 @@ const newestList = computed(() => props.newest?.data ?? []);
                             </button>
                         </div>
                     </div>
-                    <label class="search-field">
-                        <span class="search-label">{{ t('search.make', 'Make') }}</span>
-                        <select v-model="search.make_id" class="search-select">
-                            <option value="">{{ t('common.any_make', 'Any make') }}</option>
-                            <option v-for="m in makes" :key="m.id" :value="m.id">{{ m.name }}</option>
-                        </select>
-                    </label>
+                    <div class="search-field mm-field">
+                        <span class="search-label">{{ t('search.make_model', 'Make & model') }}</span>
+                        <MakeModelSelect v-model:make-id="search.make_id" v-model:model-id="search.car_model_id" :category="search.category" :placeholder="t('common.any_make_model', 'Any make & model')" hero />
+                    </div>
                     <label class="search-field">
                         <span class="search-label">{{ t('search.price', 'Max price (EUR)') }}</span>
-                        <input v-model="search.price_max" class="search-select" inputmode="numeric" :placeholder="t('search.price_ph', 'e.g. 15 000')" />
+                        <select v-model="search.price_max" class="search-select">
+                            <option value="">{{ t('search.any_price', 'Any price') }}</option>
+                            <option v-for="p in priceSteps" :key="p" :value="p">{{ t('search.up_to', 'up to') }} {{ eur(p) }}</option>
+                        </select>
                     </label>
                     <label class="search-field">
                         <span class="search-label">{{ t('search.city', 'City') }}</span>

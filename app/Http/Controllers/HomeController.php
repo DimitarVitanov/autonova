@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Dealer;
 use App\Models\Make;
 use App\Models\Vehicle;
-use App\Support\MarketplaceOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -97,7 +96,6 @@ class HomeController extends Controller
                 'results' => Vehicle::active()->count(),
             ],
             'options' => [
-                'makes' => MarketplaceOptions::makes('cars'),
                 'cities' => config('marketplace.cities'),
             ],
             'favoriteIds' => $request->user()?->favorites()->pluck('vehicle_id')->all() ?? [],

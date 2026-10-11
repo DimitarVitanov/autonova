@@ -1,5 +1,6 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue';
+import MakeModelSelect from '@/Components/MakeModelSelect.vue';
 import { t } from '@/lib/i18n.js';
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const f = reactive({
     category: props.filters.category ?? '',
     make_id: props.filters.make_id ?? '',
     car_model_id: props.filters.car_model_id ?? '',
+    version: props.filters.version ?? '',
     price_min: props.filters.price_min ?? '',
     price_max: props.filters.price_max ?? '',
     year_min: props.filters.year_min ?? '',
@@ -30,29 +32,26 @@ const f = reactive({
     features: Array.isArray(props.filters.features) ? [...props.filters.features] : [],
 });
 
-const makes = ref(props.options.makes ?? []);
-const models = ref(props.options.models ?? []);
+const versions = ref([]);
 const showAllFeatures = ref(false);
 
 const bodyTypes = computed(() => (f.category ? (props.options.body_types?.[f.category] ?? []) : []));
 const visibleFeatures = computed(() => (showAllFeatures.value ? props.options.features : (props.options.features ?? []).slice(0, 10)));
 
-watch(() => f.category, async (slug) => {
+watch(() => f.category, () => {
     f.make_id = '';
     f.car_model_id = '';
     f.body_type = '';
-    models.value = [];
-    if (!slug) { makes.value = []; return; }
-    const { data } = await window.axios.get(route('api.makes'), { params: { category: slug } });
-    makes.value = data;
 });
 
-watch(() => f.make_id, async (id) => {
-    f.car_model_id = '';
-    if (!id) { models.value = []; return; }
-    const { data } = await window.axios.get(route('api.models'), { params: { make_id: id } });
-    models.value = data;
-});
+// Versions / trims of the chosen model (e.g. 3 Series → 320d, 330i).
+watch(() => f.car_model_id, async (id, old) => {
+    if (old !== undefined) f.version = '';
+    versions.value = [];
+    if (!id) return;
+    const { data } = await window.axios.get(route('api.versions'), { params: { car_model_id: id } });
+    if (id === f.car_model_id) versions.value = data;
+}, { immediate: true });
 
 const params = () => {
     const out = {};
@@ -71,7 +70,7 @@ const apply = () => emit('apply', params());
 const save = () => emit('save', params());
 const clear = () => {
     Object.assign(f, {
-        category: f.category, make_id: '', car_model_id: '', price_min: '', price_max: '',
+        category: f.category, make_id: '', car_model_id: '', version: '', price_min: '', price_max: '',
         year_min: '', year_max: '', mileage_max: '', power_min: '', power_max: '',
         fuel: [], transmission: '', drivetrain: '', body_type: '', condition: '',
         seller_type: 'all', city: '', features: [],
@@ -97,19 +96,21 @@ const clear = () => {
             </div>
 
             <div class="field">
-                <label>{{ t('search.make', 'Make') }}</label>
-                <select v-model="f.make_id" class="input" :disabled="!f.category">
-                    <option value="">{{ f.category ? t('common.any_make', 'Any make') : t('flt.select_cat_first', 'Select category first') }}</option>
-                    <option v-for="m in makes" :key="m.id" :value="m.id">{{ m.name }}</option>
-                </select>
+                <label>{{ t('search.make_model', 'Make & model') }}</label>
+                <MakeModelSelect
+                    v-model:make-id="f.make_id" v-model:model-id="f.car_model_id" :category="f.category"
+                    :placeholder="f.category ? t('common.any_make_model', 'Any make & model') : t('flt.select_cat_first', 'Select category first')"
+                />
             </div>
 
-            <div class="field" v-if="f.make_id">
-                <label>{{ t('flt.model', 'Model') }}</label>
-                <select v-model="f.car_model_id" class="input">
-                    <option value="">{{ t('flt.any_model', 'Any model') }}</option>
-                    <option v-for="m in models" :key="m.id" :value="m.id">{{ m.name }}</option>
-                </select>
+            <div v-if="f.car_model_id && versions.length">
+                <label class="label">{{ t('flt.version', 'Version') }}</label>
+                <div class="version-chips">
+                    <button
+                        v-for="v in versions" :key="v" type="button" class="version-chip" :class="{ on: f.version === v }"
+                        :aria-pressed="f.version === v" @click="f.version = f.version === v ? '' : v"
+                    >{{ v }}</button>
+                </div>
             </div>
 
             <div class="field">
@@ -229,6 +230,15 @@ const clear = () => {
 .link-clear, .link-more { background: transparent; border: 0; color: var(--color-accent); font: 600 12px var(--font-heading); cursor: pointer; padding: 0; }
 .link-more { margin-top: 8px; }
 .filter-stack { display: flex; flex-direction: column; gap: 16px; }
+.version-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.version-chip {
+    padding: 6px 11px; border-radius: var(--radius-pill); cursor: pointer;
+    background: var(--color-card); border: 1px solid var(--color-divider);
+    color: var(--color-text); font: 600 12px var(--font-heading);
+    transition: border-color .14s var(--ease), background .14s var(--ease), color .14s var(--ease);
+}
+.version-chip:hover { border-color: var(--color-accent); }
+.version-chip.on { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
 .check-list { display: flex; flex-direction: column; gap: 9px; }
 .seg-full { display: flex; width: 100%; }
 .seg-full .seg-opt { flex: 1; justify-content: center; }

@@ -83,7 +83,6 @@ class VehicleController extends Controller
     {
         return Inertia::render('Vehicles/Create', [
             'categories' => Category::orderBy('sort')->get(['id', 'slug', 'name', 'name_plural', 'hint', 'icon']),
-            'makesByCategory' => MarketplaceOptions::makesByCategory(),
             'features' => Feature::orderBy('sort')->get(['id', 'name', 'slug', 'group']),
             'options' => MarketplaceOptions::config(),
             'promotions' => config('marketplace.promotions'),
@@ -176,8 +175,6 @@ class VehicleController extends Controller
                     'owners', 'registered_until', 'city', 'contact_phone', 'description', 'version',
                 ]),
             ],
-            'makesByCategory' => MarketplaceOptions::makesByCategory(),
-            'models' => MarketplaceOptions::models($vehicle->make_id),
             'categories' => Category::orderBy('sort')->get(['id', 'slug', 'name', 'name_plural']),
             'features' => Feature::orderBy('sort')->get(['id', 'name', 'slug', 'group']),
             'options' => MarketplaceOptions::config(),
@@ -228,6 +225,7 @@ class VehicleController extends Controller
             'category' => $request->input('category'),
             'make_id' => $request->input('make_id'),
             'car_model_id' => $request->input('car_model_id'),
+            'version' => $request->input('version'),
             'price_min' => $request->input('price_min'),
             'price_max' => $request->input('price_max'),
             'year_min' => $request->input('year_min'),

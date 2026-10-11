@@ -87,15 +87,29 @@ class MarketplaceOptions
         return $curated->concat($used)->unique(fn ($v) => mb_strtolower($v))->values()->all();
     }
 
-    /** All makes grouped by category id, for the add-listing wizard. */
-    public static function makesByCategory(): array
+    /**
+     * Makes of a category with their models nested, for the combined
+     * make & model picker.
+     *
+     * @return array<int, array{id: int, name: string, models: array<int, array{id: int, name: string}>}>
+     */
+    public static function catalog(?string $categorySlug): array
     {
-        return Cache::remember('options.makesByCategory', 300, function () {
-            return Make::orderBy('name')
-                ->get(['id', 'name', 'category_id'])
-                ->groupBy('category_id')
-                ->map(fn ($makes) => $makes->map(fn ($m) => ['id' => $m->id, 'name' => $m->name])->values())
-                ->toArray();
+        if (! $categorySlug) {
+            return [];
+        }
+
+        return Cache::remember("options.catalog.{$categorySlug}", 300, function () use ($categorySlug) {
+            return Make::whereRelation('category', 'slug', $categorySlug)
+                ->with(['models' => fn ($query) => $query->orderBy('name')->select(['id', 'make_id', 'name'])])
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(fn (Make $make) => [
+                    'id' => $make->id,
+                    'name' => $make->name,
+                    'models' => $make->models->map(fn ($model) => ['id' => $model->id, 'name' => $model->name])->all(),
+                ])
+                ->all();
         });
     }
 

@@ -53,7 +53,7 @@ const submit = () => {
             </div>
 
             <div v-if="dealers.data.length" class="dealers-grid">
-                <div v-for="d in dealers.data" :key="d.id" class="dealer-card">
+                <Link v-for="d in dealers.data" :key="d.id" :href="route('dealers.show', d.slug)" class="dealer-card">
                     <div class="dealer-top">
                         <div v-if="d.logo_url" class="dealer-logo">
                             <img :src="d.logo_url" :alt="d.name" loading="lazy" />
@@ -63,7 +63,7 @@ const submit = () => {
                         <span v-if="Number(d.rating) > 0" class="rating">★ {{ Number(d.rating).toFixed(1) }}</span>
                     </div>
 
-                    <Link :href="route('dealers.show', d.slug)" class="dealer-name">{{ d.name }}</Link>
+                    <span class="dealer-name">{{ d.name }}</span>
                     <div class="mono dealer-meta">{{ (d.city ? t('city.' + d.city, d.city) : '') }} · {{ num(d.vehicles_count) }} {{ t('common.vehicles_word', 'vehicles') }}</div>
 
                     <div class="dealer-foot">
@@ -72,7 +72,7 @@ const submit = () => {
                         </span>
                         <span v-if="d.founded_year" class="mono founded">{{ t('dlr.est', 'Est.') }} {{ d.founded_year }}</span>
                     </div>
-                </div>
+                </Link>
             </div>
 
             <p v-else class="text-muted empty">{{ t('dlr.empty', 'No dealers match your search.') }}</p>
@@ -100,7 +100,7 @@ const submit = () => {
 /* Dealer grid */
 .dealers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
 .dealer-card {
-    display: flex; flex-direction: column;
+    display: flex; flex-direction: column; color: inherit; cursor: pointer;
     background: var(--color-card); border: 1px solid var(--color-hairline);
     border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 22px;
     transition: border-color .22s var(--ease), box-shadow .22s var(--ease), transform .22s var(--ease);
@@ -112,7 +112,7 @@ const submit = () => {
 .dealer-logo-empty { display: grid; place-items: center; background: var(--color-text); color: var(--color-bg); font: 800 28px var(--font-heading); border-color: transparent; }
 .rating { display: inline-flex; align-items: center; gap: 4px; font: 800 12px var(--font-heading); color: var(--color-accent-700); background: var(--color-accent-100); padding: 5px 10px; border-radius: var(--radius-pill); white-space: nowrap; }
 .dealer-name { font: 800 17px/1.2 var(--font-heading); color: var(--color-text); margin: 18px 0 7px; }
-.dealer-name:hover { color: var(--color-accent); }
+.dealer-card:hover .dealer-name { color: var(--color-accent); }
 .dealer-meta { color: var(--color-neutral-700); }
 .dealer-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--color-hairline); }
 .dealer-plan { text-transform: capitalize; }

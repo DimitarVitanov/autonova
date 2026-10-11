@@ -178,6 +178,25 @@ class ListingCreationTest extends TestCase
         $this->assertSame('active', $vehicle->fresh()->status);
     }
 
+    public function test_catalog_lists_a_categorys_makes_with_their_models(): void
+    {
+        $cars = Category::create(['slug' => 'cars', 'name' => 'Car', 'name_plural' => 'Cars', 'sort' => 0]);
+        $vans = Category::create(['slug' => 'vans', 'name' => 'Van', 'name_plural' => 'Vans', 'sort' => 1]);
+        $bmw = Make::create(['category_id' => $cars->id, 'name' => 'BMW', 'slug' => 'bmw']);
+        $bmw->models()->create(['name' => '3 Series', 'slug' => '3-series']);
+        $bmw->models()->create(['name' => '1 Series', 'slug' => '1-series']);
+        Make::create(['category_id' => $vans->id, 'name' => 'Iveco', 'slug' => 'iveco']);
+
+        $this->getJson(route('api.catalog', ['category' => 'cars']))
+            ->assertOk()
+            ->assertJsonCount(1)
+            ->assertJsonPath('0.name', 'BMW')
+            ->assertJsonPath('0.models.0.name', '1 Series')
+            ->assertJsonPath('0.models.1.name', '3 Series');
+
+        $this->getJson(route('api.catalog'))->assertOk()->assertExactJson([]);
+    }
+
     public function test_client_cannot_reach_admin(): void
     {
         $client = User::factory()->create(['role' => 'client']);

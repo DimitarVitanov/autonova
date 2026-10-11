@@ -1,15 +1,15 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import MarketplaceLayout from '@/Layouts/MarketplaceLayout.vue';
 import CategoryIcon from '@/Components/CategoryIcon.vue';
 import ImageUploader from '@/Components/ImageUploader.vue';
+import MakeModelSelect from '@/Components/MakeModelSelect.vue';
 import VersionSelect from '@/Components/VersionSelect.vue';
 import { t } from '@/lib/i18n.js';
 
 const props = defineProps({
     categories: Array,
-    makesByCategory: Object,
     features: Array,
     options: Object,
     promotions: Array,
@@ -35,9 +35,7 @@ const form = useForm({
     features: [], promotion: 'none', images: [],
 });
 
-const models = ref([]);
 const categorySlug = computed(() => props.categories.find((c) => c.id === form.category_id)?.slug ?? '');
-const makes = computed(() => props.makesByCategory[form.category_id] ?? []);
 const bodyTypes = computed(() => (categorySlug.value ? (props.options.body_types?.[categorySlug.value] ?? []) : []));
 const featureGroups = computed(() => {
     const groups = {};
@@ -45,16 +43,7 @@ const featureGroups = computed(() => {
     return groups;
 });
 
-watch(() => form.make_id, async (id) => {
-    form.car_model_id = '';
-    models.value = [];
-    if (id) {
-        const { data } = await window.axios.get(route('api.models'), { params: { make_id: id } });
-        models.value = data;
-    }
-});
-
-const pickCategory = (id) => { form.category_id = id; form.make_id = ''; step.value = 2; };
+const pickCategory = (id) => { form.category_id = id; form.make_id = ''; form.car_model_id = ''; step.value = 2; };
 const next = () => { if (step.value < 5) step.value++; };
 const prev = () => { if (step.value > 1) step.value--; };
 const goStep = (n) => (step.value = n);
@@ -105,11 +94,8 @@ const errorList = computed(() => Object.values(form.errors));
             <div v-show="step === 2" class="panel-pad">
                 <h4>{{ t('sell.basic_details', 'Basic details') }}</h4>
                 <div class="form-grid">
-                    <div class="field"><label>{{ t('search.make', 'Make') }}</label>
-                        <select v-model="form.make_id" class="input"><option value="">{{ t('sell.select_make', 'Select make') }}</option><option v-for="m in makes" :key="m.id" :value="m.id">{{ m.name }}</option></select>
-                    </div>
-                    <div class="field"><label>{{ t('flt.model', 'Model') }}</label>
-                        <select v-model="form.car_model_id" class="input" :disabled="!form.make_id"><option value="">{{ t('sell.select_model', 'Select model') }}</option><option v-for="m in models" :key="m.id" :value="m.id">{{ m.name }}</option></select>
+                    <div class="field"><label>{{ t('search.make_model', 'Make & model') }}</label>
+                        <MakeModelSelect v-model:make-id="form.make_id" v-model:model-id="form.car_model_id" :category="categorySlug" :placeholder="t('sell.select_make_model', 'Select make & model')" :any-model-label="t('sell.other_model', 'Other model')" />
                     </div>
                     <div class="field"><label>{{ t('sell.version_trim', 'Version / trim') }}</label><VersionSelect v-model="form.version" :car-model-id="form.car_model_id" /></div>
                     <div class="field"><label>{{ t('flt.year', 'Year') }}</label>

@@ -130,6 +130,7 @@ class Vehicle extends Model
 
         $query->when($f['make_id'] ?? null, fn ($q, $v) => $q->where('make_id', $v));
         $query->when($f['car_model_id'] ?? null, fn ($q, $v) => $q->where('car_model_id', $v));
+        $query->when($f['version'] ?? null, fn ($q, $v) => $q->where('version', $v));
 
         $query->when($f['price_min'] ?? null, fn ($q, $v) => $q->where('price', '>=', (int) $v));
         $query->when($f['price_max'] ?? null, fn ($q, $v) => $q->where('price', '<=', (int) $v));

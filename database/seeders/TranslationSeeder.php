@@ -89,6 +89,13 @@ class TranslationSeeder extends Seeder
             ['common', 'common.search', 'Search', 'Пребарај'],
             ['common', 'common.all_macedonia', 'All Macedonia', 'Цела Македонија'],
             ['common', 'common.any_make', 'Any make', 'Сите марки'],
+            ['common', 'common.any_make_model', 'Any make & model', 'Сите марки и модели'],
+            ['common', 'mm.search_ph', 'Search make or model…', 'Пребарај марка или модел…'],
+            ['common', 'mm.all_makes', 'All makes', 'Сите марки'],
+            ['common', 'mm.no_match', 'No matches', 'Нема резултати'],
+            ['search', 'search.make_model', 'Make & model', 'Марка и модел'],
+            ['sell', 'sell.select_make_model', 'Select make & model', 'Избери марка и модел'],
+            ['sell', 'sell.other_model', 'Other model', 'Друг модел'],
             ['common', 'common.all_prefix', 'All', 'Сите'],
             ['common', 'common.vehicles_word', 'vehicles', 'возила'],
             ['common', 'common.dealer', 'Dealer', 'Автосалон'],
@@ -110,6 +117,8 @@ class TranslationSeeder extends Seeder
             ['hero', 'search.price', 'Max price (EUR)', 'Макс. цена (ЕУР)'],
             ['hero', 'search.city', 'City', 'Град'],
             ['hero', 'search.price_ph', 'e.g. 15 000', 'пр. 15 000'],
+            ['hero', 'search.any_price', 'Any price', 'Сите цени'],
+            ['hero', 'search.up_to', 'up to', 'до'],
 
             // ── Home sections ────────────────────────────────────────────
             ['home', 'home.featured_kicker', 'Handpicked', 'Одбрано'],
@@ -196,6 +205,8 @@ class TranslationSeeder extends Seeder
             ['flt', 'flt.select_cat_first', 'Select category first', 'Прво избери категорија'],
             ['flt', 'flt.model', 'Model', 'Модел'],
             ['flt', 'flt.any_model', 'Any model', 'Сите модели'],
+            ['flt', 'flt.version', 'Version', 'Верзија'],
+            ['flt', 'flt.any_version', 'Any version', 'Сите верзии'],
             ['flt', 'flt.price', 'Price (EUR)', 'Цена (ЕУР)'],
             ['flt', 'flt.from', 'from', 'од'],
             ['flt', 'flt.to', 'to', 'до'],
@@ -315,7 +326,7 @@ class TranslationSeeder extends Seeder
 
             // ── Body / sub types ─────────────────────────────────────────
             ['body', 'body.Hatchback', 'Hatchback', 'Хечбек'],
-            ['body', 'body.SUV', 'SUV', 'Џип (SUV)'],
+            ['body', 'body.SUV', 'SUV', 'Џип'],
             ['body', 'body.Sedan', 'Sedan', 'Седан'],
             ['body', 'body.Estate', 'Estate', 'Караван'],
             ['body', 'body.Coupe', 'Coupe', 'Купе'],
