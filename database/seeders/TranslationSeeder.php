@@ -115,6 +115,7 @@ class TranslationSeeder extends Seeder
             ['hero', 'search.price_ph', 'e.g. 15 000', 'пр. 15 000'],
             ['hero', 'search.any_price', 'Any price', 'Сите цени'],
             ['hero', 'search.up_to', 'up to', 'до'],
+            ['hero', 'search.more_filters', 'More filters', 'Повеќе филтри'],
 
             // ── Home sections ────────────────────────────────────────────
             ['home', 'home.featured_kicker', 'Handpicked', 'Одбрано'],

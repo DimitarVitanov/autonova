@@ -110,6 +110,17 @@ const submit = () => {
     router.get(route('vehicles.index'), params);
 };
 
+// "Filters" button: the first click opens the extra filters here, the second
+// carries everything over to the results page with its full filter panel open.
+const moreFilters = () => {
+    if (!extraOpen.value) {
+        extraOpen.value = true;
+        return;
+    }
+    sessionStorage.setItem('autonova.openFilters', '1');
+    submit();
+};
+
 // Custom category picker (native <select> can't show icons)
 const catOpen = ref(false);
 const catField = ref(null);
@@ -192,10 +203,11 @@ const newestList = computed(() => props.newest?.data ?? []);
                             <option v-for="c in options.cities" :key="c" :value="c">{{ t('city.' + c, c) }}</option>
                         </select>
                     </label>
-                    <button type="button" class="search-more" :class="{ open: extraOpen }" :aria-expanded="extraOpen" @click="extraOpen = !extraOpen">
+                    <button type="button" class="search-more" :class="{ open: extraOpen }" :aria-expanded="extraOpen" @click="moreFilters">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 7h10m4 0h2M4 17h2m4 0h10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="7" r="2.4" stroke="currentColor" stroke-width="2.2"/><circle cx="8" cy="17" r="2.4" stroke="currentColor" stroke-width="2.2"/></svg>
-                        <span>{{ t('idx.filters', 'Filters') }}</span>
+                        <span>{{ extraOpen ? t('search.more_filters', 'More filters') : t('idx.filters', 'Filters') }}</span>
                         <span v-if="extraCount" class="search-more-count">{{ extraCount }}</span>
+                        <svg v-if="extraOpen" width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12h15m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
                     <button type="submit" class="search-submit">
                         <span>{{ t('common.search', 'Search') }}</span>

@@ -20,7 +20,9 @@ const page = usePage();
 const favSet = computed(() => new Set(props.favoriteIds ?? []));
 const view = ref(props.filters.view === 'list' ? 'list' : 'grid');
 const q = ref(props.filters.q ?? '');
-const filtersOpen = ref(false);
+// Arriving from the home page's "More filters" button opens the filter panel straight away (it is collapsed on phones).
+const filtersOpen = ref(sessionStorage.getItem('autonova.openFilters') === '1');
+sessionStorage.removeItem('autonova.openFilters');
 
 const heading = computed(() => {
     const makeName = props.options.makes?.find((m) => m.id == props.filters.make_id)?.name;
