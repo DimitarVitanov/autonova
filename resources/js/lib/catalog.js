@@ -1,7 +1,8 @@
 const cache = new Map();
 
 /**
- * Makes of a category with their models nested — [{id, name, models: [{id, name}]}].
+ * Makes of a category with their models and versions nested —
+ * [{id, name, models: [{id, name, versions: [string]}]}].
  * Fetched once per category and shared by every make & model picker on the page.
  */
 export function loadCatalog(slug) {

@@ -32,7 +32,6 @@ const f = reactive({
     features: Array.isArray(props.filters.features) ? [...props.filters.features] : [],
 });
 
-const versions = ref([]);
 const showAllFeatures = ref(false);
 
 const bodyTypes = computed(() => (f.category ? (props.options.body_types?.[f.category] ?? []) : []));
@@ -41,17 +40,9 @@ const visibleFeatures = computed(() => (showAllFeatures.value ? props.options.fe
 watch(() => f.category, () => {
     f.make_id = '';
     f.car_model_id = '';
+    f.version = '';
     f.body_type = '';
 });
-
-// Versions / trims of the chosen model (e.g. 3 Series → 320d, 330i).
-watch(() => f.car_model_id, async (id, old) => {
-    if (old !== undefined) f.version = '';
-    versions.value = [];
-    if (!id) return;
-    const { data } = await window.axios.get(route('api.versions'), { params: { car_model_id: id } });
-    if (id === f.car_model_id) versions.value = data;
-}, { immediate: true });
 
 const params = () => {
     const out = {};
@@ -98,19 +89,10 @@ const clear = () => {
             <div class="field">
                 <label>{{ t('search.make_model', 'Make & model') }}</label>
                 <MakeModelSelect
-                    v-model:make-id="f.make_id" v-model:model-id="f.car_model_id" :category="f.category"
-                    :placeholder="f.category ? t('common.any_make_model', 'Any make & model') : t('flt.select_cat_first', 'Select category first')"
+                    v-model:make-id="f.make_id" v-model:model-id="f.car_model_id" v-model:version="f.version" :category="f.category" grouped
+                    :placeholder="f.category ? t('common.any_make', 'Any make') : t('flt.select_cat_first', 'Select category first')"
+                    :model-placeholder="t('flt.any_model', 'Any model')"
                 />
-            </div>
-
-            <div v-if="f.car_model_id && versions.length">
-                <label class="label">{{ t('flt.version', 'Version') }}</label>
-                <div class="version-chips">
-                    <button
-                        v-for="v in versions" :key="v" type="button" class="version-chip" :class="{ on: f.version === v }"
-                        :aria-pressed="f.version === v" @click="f.version = f.version === v ? '' : v"
-                    >{{ v }}</button>
-                </div>
             </div>
 
             <div class="field">
@@ -230,15 +212,6 @@ const clear = () => {
 .link-clear, .link-more { background: transparent; border: 0; color: var(--color-accent); font: 600 12px var(--font-heading); cursor: pointer; padding: 0; }
 .link-more { margin-top: 8px; }
 .filter-stack { display: flex; flex-direction: column; gap: 16px; }
-.version-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.version-chip {
-    padding: 6px 11px; border-radius: var(--radius-pill); cursor: pointer;
-    background: var(--color-card); border: 1px solid var(--color-divider);
-    color: var(--color-text); font: 600 12px var(--font-heading);
-    transition: border-color .14s var(--ease), background .14s var(--ease), color .14s var(--ease);
-}
-.version-chip:hover { border-color: var(--color-accent); }
-.version-chip.on { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
 .check-list { display: flex; flex-direction: column; gap: 9px; }
 .seg-full { display: flex; width: 100%; }
 .seg-full .seg-opt { flex: 1; justify-content: center; }

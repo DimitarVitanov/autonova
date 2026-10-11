@@ -88,10 +88,10 @@ class MarketplaceOptions
     }
 
     /**
-     * Makes of a category with their models nested, for the combined
-     * make & model picker.
+     * Makes of a category with their models and each model's versions nested,
+     * for the combined make & model picker.
      *
-     * @return array<int, array{id: int, name: string, models: array<int, array{id: int, name: string}>}>
+     * @return array<int, array{id: int, name: string, models: array<int, array{id: int, name: string, versions: array<int, string>}>}>
      */
     public static function catalog(?string $categorySlug): array
     {
@@ -100,16 +100,39 @@ class MarketplaceOptions
         }
 
         return Cache::remember("options.catalog.{$categorySlug}", 300, function () use ($categorySlug) {
-            return Make::whereRelation('category', 'slug', $categorySlug)
+            $makes = Make::whereRelation('category', 'slug', $categorySlug)
                 ->with(['models' => fn ($query) => $query->orderBy('name')->select(['id', 'make_id', 'name'])])
                 ->orderBy('name')
-                ->get(['id', 'name'])
-                ->map(fn (Make $make) => [
-                    'id' => $make->id,
-                    'name' => $make->name,
-                    'models' => $make->models->map(fn ($model) => ['id' => $model->id, 'name' => $model->name])->all(),
-                ])
-                ->all();
+                ->get(['id', 'name']);
+
+            $modelIds = $makes->flatMap(fn (Make $make) => $make->models->pluck('id'));
+
+            $curated = ModelVersion::whereIn('car_model_id', $modelIds)
+                ->orderBy('sort')
+                ->get(['car_model_id', 'name'])
+                ->groupBy('car_model_id');
+
+            $used = Vehicle::whereIn('car_model_id', $modelIds)
+                ->whereIn('status', ['active', 'sold'])
+                ->whereNotNull('version')->where('version', '!=', '')
+                ->distinct()->orderBy('version')
+                ->toBase()
+                ->get(['car_model_id', 'version'])
+                ->groupBy('car_model_id');
+
+            return $makes->map(fn (Make $make) => [
+                'id' => $make->id,
+                'name' => $make->name,
+                'models' => $make->models->map(fn ($model) => [
+                    'id' => $model->id,
+                    'name' => $model->name,
+                    'versions' => collect($curated->get($model->id)?->pluck('name'))
+                        ->concat($used->get($model->id)?->pluck('version') ?? [])
+                        ->unique(fn ($version) => mb_strtolower($version))
+                        ->values()
+                        ->all(),
+                ])->all(),
+            ])->all();
         });
     }
 

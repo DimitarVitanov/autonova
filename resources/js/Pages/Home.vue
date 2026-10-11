@@ -85,11 +85,12 @@ const bodyTypes = computed(() => bodyTypesByCat[search.category] ?? bodyTypesByC
 
 const favSet = computed(() => new Set(props.favoriteIds ?? []));
 
-const search = reactive({ category: 'cars', make_id: '', car_model_id: '', price_max: '', city: '' });
+const search = reactive({ category: 'cars', make_id: '', car_model_id: '', version: '', price_max: '', city: '' });
 
 watch(() => search.category, () => {
     search.make_id = '';
     search.car_model_id = '';
+    search.version = '';
 });
 
 // Preset ceilings for the hero's max-price dropdown (EUR).
@@ -164,10 +165,10 @@ const newestList = computed(() => props.newest?.data ?? []);
                             </button>
                         </div>
                     </div>
-                    <div class="search-field mm-field">
+                    <label class="search-field">
                         <span class="search-label">{{ t('search.make_model', 'Make & model') }}</span>
-                        <MakeModelSelect v-model:make-id="search.make_id" v-model:model-id="search.car_model_id" :category="search.category" :placeholder="t('common.any_make_model', 'Any make & model')" hero />
-                    </div>
+                        <MakeModelSelect v-model:make-id="search.make_id" v-model:model-id="search.car_model_id" v-model:version="search.version" :category="search.category" :placeholder="t('common.any_make', 'Any make')" :model-placeholder="t('flt.any_model', 'Any model')" grouped hero />
+                    </label>
                     <label class="search-field">
                         <span class="search-label">{{ t('search.price', 'Max price (EUR)') }}</span>
                         <select v-model="search.price_max" class="search-select">

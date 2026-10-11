@@ -14,7 +14,7 @@ class CatalogController extends Controller
         return response()->json(MarketplaceOptions::makes($request->input('category')));
     }
 
-    /** Makes of a category with their models (JSON, for the make & model picker). */
+    /** Makes of a category with their models and versions (JSON, for the make & model picker). */
     public function catalog(Request $request): JsonResponse
     {
         return response()->json(MarketplaceOptions::catalog($request->input('category')));

@@ -95,7 +95,7 @@ const errorList = computed(() => Object.values(form.errors));
                 <h4>{{ t('sell.basic_details', 'Basic details') }}</h4>
                 <div class="form-grid">
                     <div class="field"><label>{{ t('search.make_model', 'Make & model') }}</label>
-                        <MakeModelSelect v-model:make-id="form.make_id" v-model:model-id="form.car_model_id" :category="categorySlug" :placeholder="t('sell.select_make_model', 'Select make & model')" :any-model-label="t('sell.other_model', 'Other model')" />
+                        <MakeModelSelect v-model:make-id="form.make_id" v-model:model-id="form.car_model_id" :category="categorySlug" :placeholder="t('sell.select_make', 'Select make')" :model-placeholder="t('sell.select_model', 'Select model')" />
                     </div>
                     <div class="field"><label>{{ t('sell.version_trim', 'Version / trim') }}</label><VersionSelect v-model="form.version" :car-model-id="form.car_model_id" /></div>
                     <div class="field"><label>{{ t('flt.year', 'Year') }}</label>
