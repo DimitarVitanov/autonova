@@ -148,6 +148,7 @@ const newestList = computed(() => props.newest?.data ?? []);
                     <p class="hero-sub">{{ t('hero.sub', 'Cars, motorcycles, vans, trucks, machinery and trailers — from verified dealers and private sellers. Real photos, no duplicate listings.') }}</p>
                     -->
 
+                    <!-- hidden for now (client request)
                     <div class="hero-stats">
                         <div class="hero-stat">
                             <div class="hero-stat-num">{{ num(stats.vehicles) }}</div>
@@ -161,6 +162,12 @@ const newestList = computed(() => props.newest?.data ?? []);
                             <div class="hero-stat-num">{{ num(stats.new_today) }}</div>
                             <div class="hero-stat-label">{{ t('hero.stat_new', 'New today') }}</div>
                         </div>
+                    </div>
+                    -->
+
+                    <!-- Dealers shortcut: phones only, where the header's gold Dealers link is tucked into the menu -->
+                    <div class="hero-dealers-row">
+                        <Link :href="route('dealers.index')" class="hero-dealers">{{ t('nav.dealers', 'Dealers') }}</Link>
                     </div>
                 </div>
 
@@ -440,6 +447,33 @@ const newestList = computed(() => props.newest?.data ?? []);
     margin: 20px 0 20px; color: #fff;
 }
 .hero-sub { font-size: 17px; line-height: 1.6; max-width: 46ch; margin: 0; color: var(--color-on-ink-soft); }
+/* Gold pulsing Dealers button — same look as the header's, shown on phones only */
+.hero-dealers-row { display: none; margin-top: 26px; padding: 0 26px; }
+.hero-dealers {
+    position: relative; display: inline-flex; align-items: center; padding: 11px 24px;
+    color: #ffc247; font: 800 15px var(--font-heading); text-decoration: none;
+    background: rgba(255, 194, 71, 0.12); border: 1px solid rgba(255, 194, 71, 0.55);
+    border-radius: var(--radius-pill);
+    animation: hero-dealers-pulse 1.8s ease-out infinite;
+}
+.hero-dealers:hover { color: #14161b; background: #ffc247; }
+.hero-dealers::before, .hero-dealers::after {
+    position: absolute; top: 50%; margin-top: -11px;
+    font-size: 18px; line-height: 22px; font-weight: 800; color: #ffc247; pointer-events: none;
+}
+.hero-dealers::before { content: '»'; right: 100%; margin-right: 6px; animation: hero-dealers-left 0.9s ease-in-out infinite; }
+.hero-dealers::after { content: '«'; left: 100%; margin-left: 6px; animation: hero-dealers-right 0.9s ease-in-out infinite; }
+@keyframes hero-dealers-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0.6); }
+    70% { box-shadow: 0 0 0 12px rgba(255, 194, 71, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0); }
+}
+@keyframes hero-dealers-left { 0%, 100% { transform: translateX(-5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
+@keyframes hero-dealers-right { 0%, 100% { transform: translateX(5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
+@media (max-width: 900px) { .hero-dealers-row { display: block; } }
+@media (prefers-reduced-motion: reduce) {
+    .hero-dealers, .hero-dealers::before, .hero-dealers::after { animation: none; }
+}
 .hero-stats { display: flex; gap: 44px; margin-top: 40px; }
 .hero-stat-num { font: 800 36px/1 var(--font-heading); letter-spacing: -0.02em; color: #fff; }
 .hero-stat-label { margin-top: 8px; font: 600 12px var(--font-heading); color: var(--color-on-ink-muted); }
