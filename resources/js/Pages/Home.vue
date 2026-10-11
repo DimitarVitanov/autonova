@@ -453,6 +453,7 @@ const newestList = computed(() => props.newest?.data ?? []);
 .hero-sub { font-size: 17px; line-height: 1.6; max-width: 46ch; margin: 0; color: var(--color-on-ink-soft); }
 /* Gold pulsing Dealers button — the header's look without the arrows, shown on phones only */
 .hero-dealers-row { display: none; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; }
+.hero-dealers-row .hero-stat { padding-left: 16px; }
 .hero-dealers {
     position: relative; display: inline-flex; align-items: center; padding: 11px 24px;
     color: #ffc247; font: 800 15px var(--font-heading); text-decoration: none;
