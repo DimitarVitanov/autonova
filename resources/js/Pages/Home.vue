@@ -451,8 +451,8 @@ const newestList = computed(() => props.newest?.data ?? []);
     margin: 20px 0 20px; color: #fff;
 }
 .hero-sub { font-size: 17px; line-height: 1.6; max-width: 46ch; margin: 0; color: var(--color-on-ink-soft); }
-/* Gold pulsing Dealers button — same look as the header's, shown on phones only */
-.hero-dealers-row { display: none; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; padding-right: 26px; }
+/* Gold pulsing Dealers button — the header's look without the arrows, shown on phones only */
+.hero-dealers-row { display: none; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; }
 .hero-dealers {
     position: relative; display: inline-flex; align-items: center; padding: 11px 24px;
     color: #ffc247; font: 800 15px var(--font-heading); text-decoration: none;
@@ -461,22 +461,14 @@ const newestList = computed(() => props.newest?.data ?? []);
     animation: hero-dealers-pulse 1.8s ease-out infinite;
 }
 .hero-dealers:hover { color: #14161b; background: #ffc247; }
-.hero-dealers::before, .hero-dealers::after {
-    position: absolute; top: 50%; margin-top: -11px;
-    font-size: 18px; line-height: 22px; font-weight: 800; color: #ffc247; pointer-events: none;
-}
-.hero-dealers::before { content: '»'; right: 100%; margin-right: 6px; animation: hero-dealers-left 0.9s ease-in-out infinite; }
-.hero-dealers::after { content: '«'; left: 100%; margin-left: 6px; animation: hero-dealers-right 0.9s ease-in-out infinite; }
 @keyframes hero-dealers-pulse {
     0% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0.6); }
     70% { box-shadow: 0 0 0 12px rgba(255, 194, 71, 0); }
     100% { box-shadow: 0 0 0 0 rgba(255, 194, 71, 0); }
 }
-@keyframes hero-dealers-left { 0%, 100% { transform: translateX(-5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
-@keyframes hero-dealers-right { 0%, 100% { transform: translateX(5px); opacity: .45; } 50% { transform: translateX(0); opacity: 1; } }
 @media (max-width: 900px) { .hero-dealers-row { display: flex; } }
 @media (prefers-reduced-motion: reduce) {
-    .hero-dealers, .hero-dealers::before, .hero-dealers::after { animation: none; }
+    .hero-dealers { animation: none; }
 }
 .hero-stats { display: flex; gap: 44px; margin-top: 40px; }
 .hero-stat-num { font: 800 36px/1 var(--font-heading); letter-spacing: -0.02em; color: #fff; }
