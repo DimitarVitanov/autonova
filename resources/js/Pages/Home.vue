@@ -165,10 +165,10 @@ const newestList = computed(() => props.newest?.data ?? []);
                             </button>
                         </div>
                     </div>
-                    <label class="search-field">
+                    <div class="search-field">
                         <span class="search-label">{{ t('search.make_model', 'Make & model') }}</span>
                         <MakeModelSelect v-model:make-id="search.make_id" v-model:model-id="search.car_model_id" v-model:version="search.version" :category="search.category" :placeholder="t('common.any_make', 'Any make')" :model-placeholder="t('flt.any_model', 'Any model')" grouped hero />
-                    </label>
+                    </div>
                     <label class="search-field">
                         <span class="search-label">{{ t('search.price', 'Max price (EUR)') }}</span>
                         <select v-model="search.price_max" class="search-select">
