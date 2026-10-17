@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ListingController as AdminListingController;
+use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\TranslationController as AdminTranslationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\CatalogController;
@@ -108,6 +109,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/translations', [AdminTranslationController::class, 'index'])->name('translations');
     Route::post('/translations', [AdminTranslationController::class, 'update'])->name('translations.update');
+
+    Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings');
+    Route::patch('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

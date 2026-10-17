@@ -1,5 +1,7 @@
 <script setup>
 import MarketplaceLayout from '@/Layouts/MarketplaceLayout.vue';
+import LaunchOfferNote from '@/Components/LaunchOfferNote.vue';
+import PlanPrice from '@/Components/PlanPrice.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { t } from '@/lib/i18n.js';
 
@@ -23,6 +25,7 @@ defineProps({
             <div class="mono mono-accent">{{ t('prc.kicker', 'For dealers') }}</div>
             <h1 class="price-title">{{ t('prc.title', 'Your whole inventory in one place.') }}</h1>
             <p class="text-muted price-sub">{{ t('prc.sub', 'Simple monthly plans for dealerships of every size. Start free, upgrade when your stock grows — no long contracts, cancel anytime.') }}</p>
+            <LaunchOfferNote class="price-launch" />
         </section>
 
         <!-- Packages -->
@@ -37,7 +40,7 @@ defineProps({
                     <div v-if="pkg.highlight" class="pkg-badge">{{ t('prc.popular', 'Popular') }}</div>
                     <div class="pkg-top">
                         <div class="mono pkg-name">{{ pkg.name }}</div>
-                        <div class="pkg-price">{{ pkg.price }}</div>
+                        <div class="pkg-price"><PlanPrice :price="pkg.price" /></div>
                         <div class="pkg-per">{{ t('pkg.' + pkg.name + '.per', pkg.per) }}</div>
                     </div>
 
@@ -70,7 +73,7 @@ defineProps({
                     <div v-for="promo in promotions" :key="promo.key" class="promo">
                         <div class="mono promo-kicker">{{ t('promo.' + promo.key + '.kicker', promo.kicker) }}</div>
                         <div class="promo-name">{{ t('promo.' + promo.key + '.name', promo.name) }}</div>
-                        <div class="promo-price">{{ promo.price }}</div>
+                        <div class="promo-price"><PlanPrice :price="promo.price" /></div>
                         <p class="promo-desc">{{ t('promo.' + promo.key + '.desc', promo.desc) }}</p>
                     </div>
                 </div>
@@ -96,6 +99,7 @@ defineProps({
     max-width: 52ch;
     margin: 0;
 }
+.price-launch { margin-top: 22px; }
 
 /* Packages */
 .section {

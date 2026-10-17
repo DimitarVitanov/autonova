@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Category;
 use App\Models\Conversation;
 use App\Models\Translation;
+use App\Support\LaunchOffer;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -67,6 +68,9 @@ class HandleInertiaRequests extends Middleware
                     'id', 'slug', 'name', 'name_plural', 'hint', 'icon',
                 ])->toArray()),
             ],
+
+            // Free launch period: every package and promotion shows as free.
+            'launchOffer' => fn () => LaunchOffer::shared(),
 
             // Editable UI translations for the active locale (mk falls back to en).
             'i18n' => [

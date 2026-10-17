@@ -96,4 +96,15 @@ return [
     ['promo', 'promo.per', '/ month · up to 60 listings', '/ месец · до 60 огласи'],
     ['promo', 'promo.cta', 'See packages', 'Види пакети'],
     ['promo', 'promo.dismiss', 'Maybe later', 'Можеби подоцна'],
+
+    // ── Admin settings: free launch period ───────────────────────────
+    ['adm', 'adm.settings', 'Settings', 'Поставки'],
+    ['adm', 'adm.site', 'Site', 'Сајт'],
+    ['adm', 'adm.launch_title', 'Free launch period', 'Бесплатен период за лансирање'],
+    ['adm', 'adm.launch_desc', 'While on, every dealer package and listing promotion is shown as free, with the regular price struck through. It switches itself off after the end date.', 'Додека е вклучено, сите пакети за дилери и промоции на огласи се прикажуваат како бесплатни, а редовната цена е прецртана. Се исклучува сама по крајниот датум.'],
+    ['adm', 'adm.launch_toggle', 'Everything is free', 'Сè е бесплатно'],
+    ['adm', 'adm.launch_until', 'Free until (inclusive)', 'Бесплатно до (вклучително)'],
+    ['adm', 'adm.launch_live', 'Live — all plans show as free', 'Активно — сите планови се бесплатни'],
+    ['adm', 'adm.launch_ended', 'Ended — the end date has passed', 'Завршено — крајниот датум помина'],
+    ['adm', 'adm.launch_off', 'Off — regular prices', 'Исклучено — редовни цени'],
 ];

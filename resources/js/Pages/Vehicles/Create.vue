@@ -6,6 +6,8 @@ import CategoryIcon from '@/Components/CategoryIcon.vue';
 import ImageUploader from '@/Components/ImageUploader.vue';
 import MakeModelSelect from '@/Components/MakeModelSelect.vue';
 import VersionSelect from '@/Components/VersionSelect.vue';
+import LaunchOfferNote from '@/Components/LaunchOfferNote.vue';
+import PlanPrice from '@/Components/PlanPrice.vue';
 import { t } from '@/lib/i18n.js';
 
 const props = defineProps({
@@ -161,11 +163,12 @@ const errorList = computed(() => Object.values(form.errors));
             <!-- Step 5: Promotion -->
             <div v-show="step === 5" class="panel-pad">
                 <h4>{{ t('sell.promotion', 'Promotion') }}</h4>
+                <LaunchOfferNote class="promo-launch" />
                 <div class="promo-grid">
                     <label v-for="p in promotions" :key="p.key" class="promo-card" :class="{ chosen: form.promotion === p.key }">
                         <input type="radio" :value="p.key" v-model="form.promotion" class="promo-radio" />
                         <div class="mono mono-accent">{{ t('promo.' + p.key + '.kicker', p.kicker) }}</div>
-                        <div class="promo-price">{{ p.price }}</div>
+                        <div class="promo-price"><PlanPrice :price="p.price" /></div>
                         <div class="promo-name">{{ t('promo.' + p.key + '.name', p.name) }}</div>
                         <p class="text-muted promo-desc">{{ t('promo.' + p.key + '.desc', p.desc) }}</p>
                     </label>
@@ -274,6 +277,7 @@ const errorList = computed(() => Object.values(form.errors));
 .promo-card.chosen { border-color: var(--color-accent); background: var(--color-accent-100); box-shadow: var(--shadow-sm); }
 .promo-radio { display: none; }
 .promo-price { font: 800 26px/1 var(--font-heading); margin: 8px 0 4px; }
+.promo-launch { margin-bottom: 16px; }
 .promo-name { font: 700 14px var(--font-heading); }
 .promo-desc { font-size: 13px; margin: 10px 0 0; }
 

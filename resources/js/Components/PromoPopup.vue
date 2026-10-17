@@ -10,6 +10,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { t } from '@/lib/i18n.js';
+import PlanPrice from '@/Components/PlanPrice.vue';
 
 const props = defineProps({
     // How long after mount (ms) before the popup appears.
@@ -141,7 +142,7 @@ onBeforeUnmount(() => {
                         </ul>
 
                         <div class="promo-price">
-                            <span class="promo-price-amount">€79</span>
+                            <span class="promo-price-amount"><PlanPrice price="€79" /></span>
                             <span class="promo-price-per">{{ t('promo.per', '/ month · up to 60 listings') }}</span>
                         </div>
 

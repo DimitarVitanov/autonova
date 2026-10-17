@@ -20,6 +20,7 @@ const items = computed(() => {
             { name: 'admin.users', label: t('adm.users', 'Users') },
             { name: 'admin.categories', label: t('adm.categories', 'Categories') },
             { name: 'admin.translations', label: t('adm.translations', 'Translations') },
+            { name: 'admin.settings', label: t('adm.settings', 'Settings') },
         );
     }
     return base;

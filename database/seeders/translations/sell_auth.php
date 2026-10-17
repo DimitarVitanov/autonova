@@ -76,4 +76,9 @@ return [
     ['prc', 'prc.head_title', 'Packages & pricing', 'Пакети и цени'],
     ['sell', 'sell.select_version', 'Select version', 'Избери верзија'],
     ['sell', 'sell.version_other', 'Other — type it in', 'Друго — внеси рачно'],
+
+    // ── Free launch period (pricing, sell wizard, promo popup) ───────────
+    ['launch', 'launch.free', 'Free', 'Бесплатно'],
+    ['launch', 'launch.until', 'Launch offer: every plan is free until', 'Понуда за лансирање: сите планови се бесплатни до'],
+    ['launch', 'launch.now', 'Launch offer: every plan is free', 'Понуда за лансирање: сите планови се бесплатни'],
 ];
