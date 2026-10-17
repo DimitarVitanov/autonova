@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Dealer;
-use App\Models\User;
 use App\Models\Translation;
+use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,8 +51,9 @@ class DashboardController extends Controller
             'city' => $v->city,
             'seller' => $v->user->name,
             'seller_type' => $v->seller_type,
-            'category' => Translation::label('cat.' . $v->category->slug, $v->category->name),
+            'category' => Translation::label('cat.'.$v->category->slug, $v->category->name),
             'cover_url' => $v->cover_url,
+            'cover_srcset' => $v->cover_srcset,
             'created_at' => $v->created_at->diffForHumans(),
         ];
     }

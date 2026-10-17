@@ -33,8 +33,9 @@ class ListingController extends Controller
                 'status' => $v->status,
                 'seller' => $v->user->name,
                 'seller_type' => $v->seller_type,
-                'category' => Translation::label('cat.' . $v->category->slug, $v->category->name),
+                'category' => Translation::label('cat.'.$v->category->slug, $v->category->name),
                 'cover_url' => $v->cover_url,
+                'cover_srcset' => $v->cover_srcset,
                 'created_at' => $v->created_at->diffForHumans(),
             ]);
 

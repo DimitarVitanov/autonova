@@ -25,6 +25,10 @@ const specs = computed(() => {
         v.fuel ? t('enum.' + v.fuel, v.fuel) : null,
     ].filter(Boolean);
 });
+// Rendered width per breakpoint, so the browser fetches the smallest sharp rendition.
+const sizes = computed(() => (props.layout === 'list'
+    ? '(max-width: 560px) 100vw, 260px'
+    : '(max-width: 560px) 100vw, (max-width: 1100px) 50vw, 400px'));
 const sellerLabel = computed(() => props.vehicle.dealer_name || (props.vehicle.seller_type === 'dealer' ? t('common.dealer', 'Dealer') : t('common.private_seller', 'Private seller')));
 </script>
 
@@ -32,7 +36,10 @@ const sellerLabel = computed(() => props.vehicle.dealer_name || (props.vehicle.s
     <Link :href="href" :class="['vcard', layout === 'list' ? 'vcard-list' : 'vcard-grid']">
         <div class="vcard-media">
             <div class="frame frame-43">
-                <img v-if="vehicle.cover_url" :src="vehicle.cover_url" :alt="vehicle.title" loading="lazy" />
+                <img
+                    v-if="vehicle.cover_url" :src="vehicle.cover_url" :srcset="vehicle.cover_srcset" :sizes="sizes"
+                    :alt="vehicle.title" loading="lazy" decoding="async"
+                />
                 <div v-else class="img-placeholder">{{ t('common.no_photo', 'No photo') }}</div>
             </div>
             <span v-if="badge" class="frame-badge">{{ badge }}</span>

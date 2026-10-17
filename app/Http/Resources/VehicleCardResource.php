@@ -27,6 +27,7 @@ class VehicleCardResource extends JsonResource
             'promotion' => $this->promotion,
             'status' => $this->status,
             'cover_url' => $this->cover_url,
+            'cover_srcset' => $this->cover_srcset,
             'images_count' => $this->whenCounted('images', $this->images_count ?? null),
             'category' => $this->whenLoaded('category', fn () => $this->category->slug),
             'make' => $this->whenLoaded('make', fn () => $this->make?->name),

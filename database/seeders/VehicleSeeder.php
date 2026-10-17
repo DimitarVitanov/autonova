@@ -20,18 +20,24 @@ use Illuminate\Support\Str;
 class VehicleSeeder extends Seeder
 {
     private DemoImageGenerator $gen;
+
     private VehicleImageBrander $brander;
+
     private DemoPhotoLibrary $photos;
+
     private ImageService $images;
+
     private array $featureIds;
+
     private array $descriptions;
+
     private int $seedCounter = 0;
 
     public function run(): void
     {
-        $this->gen = new DemoImageGenerator();
-        $this->brander = new VehicleImageBrander();
-        $this->photos = new DemoPhotoLibrary();
+        $this->gen = new DemoImageGenerator;
+        $this->brander = new VehicleImageBrander;
+        $this->photos = new DemoPhotoLibrary;
         $this->images = app(ImageService::class);
         $this->featureIds = Feature::pluck('id')->all();
         $this->descriptions = [
@@ -140,7 +146,7 @@ class VehicleSeeder extends Seeder
             'make_id' => $d['make']?->id,
             'car_model_id' => $d['model']?->id,
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . Str::lower(Str::random(6)),
+            'slug' => Str::slug($title).'-'.Str::lower(Str::random(6)),
             'version' => $d['version'],
             'price' => $d['price'],
             'vat' => $dealer ? 'with_vat' : 'negotiable',
@@ -157,7 +163,7 @@ class VehicleSeeder extends Seeder
             'color' => $d['color'],
             'condition' => $d['km'] < 500 ? 'new' : 'used',
             'owners' => random_int(1, 3),
-            'registered_until' => str_pad((string) random_int(1, 12), 2, '0', STR_PAD_LEFT) . ' / ' . random_int(2026, 2028),
+            'registered_until' => str_pad((string) random_int(1, 12), 2, '0', STR_PAD_LEFT).' / '.random_int(2026, 2028),
             'city' => $seller->city ?? config('marketplace.cities')[array_rand(config('marketplace.cities'))],
             'description' => $this->descriptions[array_rand($this->descriptions)],
             'seller_type' => $dealer ? 'dealer' : 'private',
@@ -198,12 +204,13 @@ class VehicleSeeder extends Seeder
                     'variant' => $v,
                 ]);
 
-            $stored = $this->images->storeBinary($binary, 'vehicles/' . now()->format('Y/m'));
+            $stored = $this->images->storeBinary($binary, 'vehicles/'.now()->format('Y/m'));
 
             VehicleImage::create([
                 'vehicle_id' => $vehicle->id,
                 'path' => $stored['path'],
                 'thumb_path' => $stored['thumb_path'],
+                'variants' => $stored['variants'],
                 'width' => $stored['width'],
                 'height' => $stored['height'],
                 'sort' => $v,
@@ -264,6 +271,7 @@ class VehicleSeeder extends Seeder
                 return (string) $key;
             }
         }
+
         return (string) array_key_first($weights);
     }
 }

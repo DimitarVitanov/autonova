@@ -108,7 +108,7 @@ const destroy = (slug) => {
                                         <div class="veh">
                                             <Link :href="route('vehicles.show', row.slug)" class="veh-thumb">
                                                 <div class="frame frame-43">
-                                                    <img v-if="row.cover_url" :src="row.cover_url" :alt="row.title" />
+                                                    <img v-if="row.cover_url" :src="row.cover_url" :srcset="row.cover_srcset" sizes="60px" :alt="row.title" loading="lazy" />
                                                     <div v-else class="img-placeholder">{{ t('common.no_photo', 'No photo') }}</div>
                                                 </div>
                                             </Link>

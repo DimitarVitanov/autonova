@@ -28,7 +28,7 @@ class Vehicle extends Model
         'views', 'bumped_at', 'published_at',
     ];
 
-    protected $appends = ['price_mkd', 'cover_url'];
+    protected $appends = ['price_mkd', 'cover_url', 'cover_srcset'];
 
     protected function casts(): array
     {
@@ -96,11 +96,19 @@ class Vehicle extends Model
 
     public function getCoverUrlAttribute(): ?string
     {
-        $image = $this->relationLoaded('coverImage')
+        return $this->loadedCoverImage()?->url;
+    }
+
+    public function getCoverSrcsetAttribute(): ?string
+    {
+        return $this->loadedCoverImage()?->srcset;
+    }
+
+    private function loadedCoverImage(): ?VehicleImage
+    {
+        return $this->relationLoaded('coverImage')
             ? $this->coverImage
             : ($this->relationLoaded('images') ? $this->images->first() : null);
-
-        return $image?->url;
     }
 
     public function getRouteKeyName(): string
@@ -125,8 +133,7 @@ class Vehicle extends Model
      */
     public function scopeFilter(Builder $query, array $f): Builder
     {
-        $query->when($f['category'] ?? null, fn ($q, $v) =>
-            $q->whereHas('category', fn ($c) => $c->where('slug', $v)));
+        $query->when($f['category'] ?? null, fn ($q, $v) => $q->whereHas('category', fn ($c) => $c->where('slug', $v)));
 
         $query->when($f['make_id'] ?? null, fn ($q, $v) => $q->where('make_id', $v));
         $query->when($f['car_model_id'] ?? null, fn ($q, $v) => $q->where('car_model_id', $v));

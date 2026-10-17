@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Conversation;
 use App\Models\Vehicle;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request): Response|\Illuminate\Http\RedirectResponse
+    public function index(Request $request): Response|RedirectResponse
     {
         $user = $request->user();
 
@@ -35,6 +36,7 @@ class DashboardController extends Controller
                 'status' => $v->status,
                 'promotion' => $v->promotion,
                 'cover_url' => $v->cover_url,
+                'cover_srcset' => $v->cover_srcset,
                 'created_at' => $v->created_at->translatedFormat('d M Y'),
             ]);
 

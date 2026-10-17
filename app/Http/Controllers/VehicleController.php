@@ -6,8 +6,10 @@ use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Http\Resources\VehicleCardResource;
 use App\Http\Resources\VehicleResource;
+use App\Models\CarModel;
 use App\Models\Category;
 use App\Models\Feature;
+use App\Models\Make;
 use App\Models\Vehicle;
 use App\Services\ImageService;
 use App\Support\MarketplaceOptions;
@@ -18,9 +20,7 @@ use Inertia\Response;
 
 class VehicleController extends Controller
 {
-    public function __construct(private ImageService $images)
-    {
-    }
+    public function __construct(private ImageService $images) {}
 
     /** Search results page. */
     public function index(Request $request): Response
@@ -98,9 +98,9 @@ class VehicleController extends Controller
         $data = $request->validated();
         $user = $request->user();
 
-        $make = ! empty($data['make_id']) ? \App\Models\Make::find($data['make_id']) : null;
-        $model = ! empty($data['car_model_id']) ? \App\Models\CarModel::find($data['car_model_id']) : null;
-        $title = trim(($make?->name ?? 'Vehicle') . ' ' . ($model?->name ?? ''));
+        $make = ! empty($data['make_id']) ? Make::find($data['make_id']) : null;
+        $model = ! empty($data['car_model_id']) ? CarModel::find($data['car_model_id']) : null;
+        $title = trim(($make?->name ?? 'Vehicle').' '.($model?->name ?? ''));
 
         $vehicle = Vehicle::create([
             'user_id' => $user->id,
@@ -109,7 +109,7 @@ class VehicleController extends Controller
             'make_id' => $data['make_id'] ?? null,
             'car_model_id' => $data['car_model_id'] ?? null,
             'title' => $title,
-            'slug' => Str::slug($title) . '-' . Str::lower(Str::random(6)),
+            'slug' => Str::slug($title).'-'.Str::lower(Str::random(6)),
             'version' => $data['version'] ?? null,
             'price' => $data['price'],
             'vat' => $data['vat'],
@@ -143,10 +143,11 @@ class VehicleController extends Controller
         }
 
         foreach ($request->file('images', []) as $index => $file) {
-            $stored = $this->images->storeListingImage($file, 'vehicles/' . now()->format('Y/m'));
+            $stored = $this->images->storeListingImage($file, 'vehicles/'.now()->format('Y/m'));
             $vehicle->images()->create([
                 'path' => $stored['path'],
                 'thumb_path' => $stored['thumb_path'],
+                'variants' => $stored['variants'],
                 'width' => $stored['width'],
                 'height' => $stored['height'],
                 'sort' => $index,
@@ -195,10 +196,11 @@ class VehicleController extends Controller
         }
 
         foreach ($request->file('images', []) as $index => $file) {
-            $stored = $this->images->storeListingImage($file, 'vehicles/' . now()->format('Y/m'));
+            $stored = $this->images->storeListingImage($file, 'vehicles/'.now()->format('Y/m'));
             $vehicle->images()->create([
                 'path' => $stored['path'],
                 'thumb_path' => $stored['thumb_path'],
+                'variants' => $stored['variants'],
                 'width' => $stored['width'],
                 'height' => $stored['height'],
                 'sort' => $vehicle->images()->max('sort') + 1,
@@ -255,6 +257,7 @@ class VehicleController extends Controller
     private function canManage(Request $request, Vehicle $vehicle): bool
     {
         $user = $request->user();
+
         return $user && ($user->id === $vehicle->user_id || $user->isStaff());
     }
 }

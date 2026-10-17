@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Make;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Services\ImageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -61,11 +62,46 @@ class ListingCreationTest extends TestCase
             $this->assertSame(1200, $h);
 
             [$tw, $th] = getimagesizefromstring(Storage::disk('public')->get($img->thumb_path));
-            $this->assertSame(800, $tw);
-            $this->assertSame(600, $th);
+            $this->assertSame(400, $tw);
+            $this->assertSame(300, $th);
+
+            // Thumb / mobile / tablet / desktop renditions, all 4:3 WebP.
+            $this->assertSame([400, 640, 1024, 1600], array_keys($img->variants));
+            foreach ($img->variants as $width => $path) {
+                [$vw, $vh, $vtype] = getimagesizefromstring(Storage::disk('public')->get($path));
+                $this->assertSame(IMAGETYPE_WEBP, $vtype);
+                $this->assertSame([$width, $width * 3 / 4], [$vw, $vh]);
+            }
+            $this->assertStringEndsWith(Storage::url($img->path).' 1600w', $img->srcset);
+            $this->assertCount(4, $img->storedFiles());
         }
 
         $this->assertTrue((bool) $vehicle->images->firstWhere('is_cover', true)->is_cover);
+    }
+
+    public function test_photos_far_from_4_3_are_shown_whole_over_a_darkened_fill_instead_of_cropped(): void
+    {
+        Storage::fake('public');
+        $images = app(ImageService::class);
+
+        // A solid red photo: cropping keeps the corners red, fitting puts the darker fill there.
+        $redPhoto = function (int $w, int $h): string {
+            $gd = imagecreatetruecolor($w, $h);
+            imagefill($gd, 0, 0, imagecolorallocate($gd, 220, 0, 0));
+            ob_start();
+            imagepng($gd);
+
+            return ob_get_clean();
+        };
+        $cornerRed = function (array $stored): int {
+            $gd = imagecreatefromstring(Storage::disk('public')->get($stored['path']));
+
+            return (imagecolorat($gd, 8, 8) >> 16) & 0xFF;
+        };
+
+        $this->assertGreaterThan(200, $cornerRed($images->storeBinary($redPhoto(1800, 1200))), '3:2 is cropped to fill');
+        $this->assertLessThan(190, $cornerRed($images->storeBinary($redPhoto(900, 1600))), 'portrait is fitted whole');
+        $this->assertLessThan(190, $cornerRed($images->storeBinary($redPhoto(2400, 800))), 'panorama is fitted whole');
     }
 
     /** @return array<string, mixed> */
@@ -138,7 +174,7 @@ class ListingCreationTest extends TestCase
 
         $listing = fn (string $version, string $status) => Vehicle::create([
             'user_id' => User::factory()->create()->id, 'category_id' => $category->id, 'make_id' => $make->id,
-            'car_model_id' => $golf->id, 'title' => 'VW Golf', 'slug' => 'golf-' . uniqid(), 'version' => $version,
+            'car_model_id' => $golf->id, 'title' => 'VW Golf', 'slug' => 'golf-'.uniqid(), 'version' => $version,
             'price' => 5000, 'year' => 2015, 'mileage_km' => 100000, 'fuel' => 'petrol', 'transmission' => 'manual',
             'condition' => 'used', 'city' => 'Skopje', 'seller_type' => 'private', 'status' => $status,
         ]);

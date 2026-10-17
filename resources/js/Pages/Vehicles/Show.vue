@@ -19,6 +19,7 @@ const v = computed(() => props.vehicle);
 const images = computed(() => v.value.images ?? []);
 const activeIndex = ref(0);
 const activeImage = computed(() => images.value[activeIndex.value]?.url ?? v.value.cover_url);
+const activeSrcset = computed(() => images.value[activeIndex.value]?.srcset ?? v.value.cover_srcset);
 const showPhone = ref(false);
 const isFav = computed(() => (props.favoriteIds ?? []).includes(v.value.id));
 
@@ -71,8 +72,11 @@ const sendMessage = () => {
                 <!-- Main column -->
                 <div class="detail-main">
                     <div class="gallery">
-                        <div class="frame frame-169 gallery-main">
-                            <img v-if="activeImage" :src="activeImage" :alt="vehicle.title" />
+                        <div class="frame frame-43 gallery-main">
+                            <img
+                                v-if="activeImage" :src="activeImage" :srcset="activeSrcset"
+                                sizes="(max-width: 900px) 100vw, 860px" :alt="vehicle.title"
+                            />
                             <span class="frame-count">{{ activeIndex + 1 }} / {{ images.length }}</span>
                         </div>
                         <div v-if="images.length > 1" class="thumbs">

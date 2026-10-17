@@ -95,7 +95,7 @@ const destroy = (row) => {
                                 <td>
                                     <div class="veh-cell">
                                         <div class="veh-thumb frame frame-43">
-                                            <img v-if="row.cover_url" :src="row.cover_url" :alt="row.title" loading="lazy" />
+                                            <img v-if="row.cover_url" :src="row.cover_url" :srcset="row.cover_srcset" sizes="64px" :alt="row.title" loading="lazy" />
                                             <div v-else class="img-placeholder">{{ t('dash.no_photo', 'No photo') }}</div>
                                         </div>
                                         <div class="veh-info">

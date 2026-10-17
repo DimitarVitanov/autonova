@@ -98,12 +98,13 @@ class RebrandVehicleImages extends Command
                     'variant' => $v,
                 ]);
 
-            $stored = $images->storeBinary($binary, 'vehicles/' . now()->format('Y/m'));
+            $stored = $images->storeBinary($binary, 'vehicles/'.now()->format('Y/m'));
 
             $newRows[] = VehicleImage::create([
                 'vehicle_id' => $vehicle->id,
                 'path' => $stored['path'],
                 'thumb_path' => $stored['thumb_path'],
+                'variants' => $stored['variants'],
                 'width' => $stored['width'],
                 'height' => $stored['height'],
                 'sort' => $v,
@@ -118,7 +119,7 @@ class RebrandVehicleImages extends Command
         // Remove the superseded rows (files optionally purged).
         foreach ($existing as $old) {
             if ($this->option('purge')) {
-                Storage::disk('public')->delete(array_filter([$old->path, $old->thumb_path]));
+                Storage::disk('public')->delete($old->storedFiles());
             }
             $old->delete();
         }

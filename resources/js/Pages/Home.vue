@@ -295,7 +295,10 @@ const newestList = computed(() => props.newest?.data ?? []);
                 <Link v-if="hero" :href="route('vehicles.show', hero.slug)" class="showcase">
                     <div class="showcase-spot" aria-hidden="true"></div>
                     <div class="showcase-frame">
-                        <img v-if="hero.cover_url" :src="hero.cover_url" :alt="hero.title" />
+                        <img
+                            v-if="hero.cover_url" :src="hero.cover_url" :srcset="hero.cover_srcset"
+                            sizes="(max-width: 1040px) 100vw, 640px" :alt="hero.title" fetchpriority="high"
+                        />
                         <div class="showcase-caption">
                             <span class="showcase-kicker">{{ t('hero.pick', 'Pick of the week') }}</span>
                             <span class="showcase-title">{{ hero.title }}</span>

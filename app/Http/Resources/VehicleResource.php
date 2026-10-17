@@ -48,10 +48,12 @@ class VehicleResource extends JsonResource
             'make' => $this->make?->name,
             'model' => $this->carModel?->name,
             'cover_url' => $this->cover_url,
+            'cover_srcset' => $this->cover_srcset,
             'images' => $this->whenLoaded('images', fn () => $this->images->map(fn ($img) => [
                 'id' => $img->id,
                 'url' => $img->url,
                 'thumb_url' => $img->thumb_url,
+                'srcset' => $img->srcset,
                 'is_cover' => $img->is_cover,
             ])),
             'features' => $this->whenLoaded('features', fn () => $this->features
