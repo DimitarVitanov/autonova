@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\VehicleCardResource;
-use App\Models\Vehicle;
 use App\Models\Translation;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,6 +18,7 @@ class SavedController extends Controller
         $favoriteIds = $user->favorites()->pluck('vehicle_id');
 
         $vehicles = Vehicle::whereIn('id', $favoriteIds)
+            ->fromActiveSellers()
             ->with(['make', 'carModel', 'category', 'dealer', 'coverImage'])
             ->withCount('images')
             ->latest()
@@ -44,23 +45,23 @@ class SavedController extends Controller
             $parts[] = ucfirst($filters['q']);
         }
         if (! empty($filters['category'])) {
-            $parts[] = Translation::label('cat.' . $filters['category'], ucfirst($filters['category']));
+            $parts[] = Translation::label('cat.'.$filters['category'], ucfirst($filters['category']));
         }
         if (! empty($filters['city'])) {
-            $parts[] = Translation::label('city.' . $filters['city'], $filters['city']);
+            $parts[] = Translation::label('city.'.$filters['city'], $filters['city']);
         }
         if (! empty($filters['fuel'])) {
             $parts[] = implode('/', array_map(function ($fuel) {
                 $label = config("marketplace.fuels.{$fuel}", ucfirst($fuel));
 
-                return Translation::label('enum.' . $label, $label);
+                return Translation::label('enum.'.$label, $label);
             }, (array) $filters['fuel']));
         }
         if (! empty($filters['price_max'])) {
             $parts[] = __('up to €:price', ['price' => number_format((int) $filters['price_max'])]);
         }
         if (! empty($filters['year_min'])) {
-            $parts[] = $filters['year_min'] . '+';
+            $parts[] = $filters['year_min'].'+';
         }
 
         return implode(' · ', $parts) ?: __('All vehicles');

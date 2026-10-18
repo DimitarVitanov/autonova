@@ -50,8 +50,12 @@ class UserController extends Controller
         return back()->with('success', __(":name's role updated to :role.", ['name' => $user->name, 'role' => __($data['role'])]));
     }
 
-    public function toggleActive(User $user)
+    public function toggleActive(Request $request, User $user)
     {
+        if ($user->is($request->user())) {
+            return back()->with('error', __('You cannot suspend your own account.'));
+        }
+
         $user->update(['is_active' => ! $user->is_active]);
 
         return back()->with('success', $user->is_active ? __('User activated.') : __('User suspended.'));

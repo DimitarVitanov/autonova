@@ -53,8 +53,9 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
-        $dealers = Dealer::where('verified', true)
-            ->withCount(['vehicles' => fn ($q) => $q->where('status', 'active')])
+        $dealers = Dealer::active()
+            ->where('verified', true)
+            ->withCount(['vehicles' => fn ($q) => $q->active()])
             ->orderByDesc('vehicles_count')
             ->limit(4)
             ->get(['id', 'name', 'slug', 'city', 'package', 'verified']);
@@ -92,7 +93,7 @@ class HomeController extends Controller
             'brands' => $brands,
             'stats' => [
                 'vehicles' => Vehicle::active()->count(),
-                'dealers' => Dealer::count(),
+                'dealers' => Dealer::active()->count(),
                 'new_today' => Vehicle::active()->whereDate('published_at', today())->count(),
                 'results' => Vehicle::active()->count(),
             ],

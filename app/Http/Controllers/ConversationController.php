@@ -15,6 +15,8 @@ class ConversationController extends Controller
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
+        abort_unless($vehicle->isPubliclyVisible(), 404);
+
         $user = $request->user();
 
         if ($user->id === $vehicle->user_id) {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +35,12 @@ class Dealer extends Model
     public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
+    }
+
+    /** Salons whose owner account is not suspended. */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->whereHas('user', fn (Builder $user) => $user->where('is_active', true));
     }
 
     public function getLogoUrlAttribute(): ?string

@@ -107,4 +107,9 @@ return [
     ['adm', 'adm.launch_live', 'Live — all plans show as free', 'Активно — сите планови се бесплатни'],
     ['adm', 'adm.launch_ended', 'Ended — the end date has passed', 'Завршено — крајниот датум помина'],
     ['adm', 'adm.launch_off', 'Off — regular prices', 'Исклучено — редовни цени'],
+
+    // ── Admin listings: featured state, suspended sellers ────────────
+    ['adm', 'adm.unfeature', 'Remove from featured', 'Отстрани од издвоени'],
+    ['adm', 'adm.featured_tag', 'Featured', 'Издвоен'],
+    ['adm', 'adm.seller_suspended', 'Seller suspended — hidden from site', 'Продавачот е суспендиран — скриено од сајтот'],
 ];

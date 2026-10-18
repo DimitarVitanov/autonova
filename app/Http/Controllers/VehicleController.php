@@ -57,7 +57,7 @@ class VehicleController extends Controller
     /** Vehicle detail page. */
     public function show(Request $request, Vehicle $vehicle): Response
     {
-        abort_if($vehicle->status !== 'active' && ! $this->canManage($request, $vehicle), 404);
+        abort_if(! $vehicle->isPubliclyVisible() && ! $this->canManage($request, $vehicle), 404);
 
         $vehicle->increment('views');
         $vehicle->load(['make', 'carModel', 'category', 'dealer', 'user', 'images', 'features']);

@@ -111,6 +111,11 @@ class Vehicle extends Model
             : ($this->relationLoaded('images') ? $this->images->first() : null);
     }
 
+    public function isPubliclyVisible(): bool
+    {
+        return $this->status === 'active' && (bool) $this->user?->is_active;
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';
@@ -118,9 +123,16 @@ class Vehicle extends Model
 
     // ---- Scopes ------------------------------------------------------------
 
+    /** Live on the site: published, and the seller's account is not suspended. */
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 'active')->fromActiveSellers();
+    }
+
+    /** Hides everything a suspended account has posted. */
+    public function scopeFromActiveSellers(Builder $query): Builder
+    {
+        return $query->whereHas('user', fn (Builder $user) => $user->where('is_active', true));
     }
 
     public function scopePromoted(Builder $query): Builder

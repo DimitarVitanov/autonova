@@ -3,7 +3,6 @@ import MarketplaceLayout from '@/Layouts/MarketplaceLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
 import { t } from '@/lib/i18n.js';
 
 defineProps({
@@ -20,18 +19,6 @@ const form = useForm({
     password: '',
     remember: false,
 });
-
-const demoAccounts = computed(() => [
-    { email: 'admin@autonova.test', role: t('role.admin', 'Admin') },
-    { email: 'moderator@autonova.test', role: t('role.moderator', 'Moderator') },
-    { email: 'vardar@autonova.test', role: t('nav.role_dealer', 'Dealer') },
-    { email: 'marko@autonova.test', role: t('nav.role_private', 'Private') },
-]);
-
-const fillDemo = (email) => {
-    form.email = email;
-    form.password = 'password';
-};
 
 const submit = () => {
     form.post(route('login'), {
@@ -108,22 +95,6 @@ const submit = () => {
                         {{ t('auth.new_here', 'New here?') }}
                         <Link :href="route('register')" class="auth-link">{{ t('auth.register', 'Register') }}</Link>
                     </p>
-
-                    <div class="panel-surface demo">
-                        <div class="mono demo-head">{{ t('auth.demo', 'Demo accounts · password: password') }}</div>
-                        <div class="demo-grid">
-                            <button
-                                v-for="acc in demoAccounts"
-                                :key="acc.email"
-                                type="button"
-                                class="demo-btn"
-                                @click="fillDemo(acc.email)"
-                            >
-                                <span class="demo-email">{{ acc.email }}</span>
-                                <span class="mono demo-role">{{ acc.role }}</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -212,49 +183,6 @@ const submit = () => {
     color: color-mix(in srgb, var(--color-text) 70%, transparent);
 }
 
-/* Demo accounts */
-.demo {
-    margin-top: 24px;
-    padding: 16px;
-}
-.demo-head {
-    color: var(--color-neutral-700);
-    margin-bottom: 12px;
-}
-.demo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-.demo-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    text-align: left;
-    background: var(--color-card);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    cursor: pointer;
-    box-shadow: var(--shadow-xs);
-    transition: border-color .14s var(--ease), background .14s var(--ease), box-shadow .14s var(--ease), transform .14s var(--ease);
-}
-.demo-btn:hover {
-    border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
-    background: var(--color-accent-100);
-    box-shadow: var(--shadow-sm);
-    transform: translateY(-1px);
-}
-.demo-email {
-    font: 600 12px var(--font-heading);
-    color: var(--color-text);
-    word-break: break-all;
-}
-.demo-role {
-    color: var(--color-accent);
-}
-
 /* Right promo — dark showroom */
 .auth-promo {
     position: relative;
@@ -298,11 +226,6 @@ const submit = () => {
         padding: 40px 24px;
         min-height: 300px;
         border-top: 1px solid var(--color-hairline);
-    }
-}
-@media (max-width: 480px) {
-    .demo-grid {
-        grid-template-columns: 1fr;
     }
 }
 </style>

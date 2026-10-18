@@ -120,16 +120,26 @@ const destroy = (slug) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="nowrap">{{ row.seller }} · {{ row.seller_type === 'dealer' ? t('flt.dealer', 'Dealer') : t('flt.private', 'Private') }}</td>
+                                    <td class="nowrap">
+                                        {{ row.seller }} · {{ row.seller_type === 'dealer' ? t('flt.dealer', 'Dealer') : t('flt.private', 'Private') }}
+                                        <div v-if="!row.seller_active" class="seller-suspended mono">{{ t('adm.seller_suspended', 'Seller suspended — hidden from site') }}</div>
+                                    </td>
                                     <td class="nowrap price">{{ eur(row.price) }}</td>
-                                    <td><span class="tag" :class="statusClass[row.status]">{{ t('status.' + row.status, statusLabel[row.status] ?? row.status) }}</span></td>
+                                    <td>
+                                        <div class="status-tags">
+                                            <span class="tag" :class="statusClass[row.status]">{{ t('status.' + row.status, statusLabel[row.status] ?? row.status) }}</span>
+                                            <span v-if="row.is_featured" class="tag tag-solid">{{ t('adm.featured_tag', 'Featured') }}</span>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="actions">
                                             <template v-if="row.status === 'pending'">
                                                 <button class="btn btn-primary btn-sm" @click="approve(row.slug)">{{ t('adm.approve', 'Approve') }}</button>
                                                 <button class="btn btn-secondary btn-sm" @click="reject(row.slug)">{{ t('adm.reject', 'Reject') }}</button>
                                             </template>
-                                            <button class="btn btn-secondary btn-sm" @click="feature(row.slug)">{{ t('adm.feature', 'Feature') }}</button>
+                                            <button class="btn btn-secondary btn-sm" @click="feature(row.slug)">
+                                                {{ row.is_featured ? t('adm.unfeature', 'Remove from featured') : t('adm.feature', 'Feature') }}
+                                            </button>
                                             <Link :href="route('vehicles.show', row.slug)" class="btn btn-secondary btn-sm">{{ t('adm.view', 'View') }}</Link>
                                             <button class="btn btn-danger btn-sm" @click="destroy(row.slug)">{{ t('adm.delete', 'Delete') }}</button>
                                         </div>
@@ -172,6 +182,8 @@ const destroy = (slug) => {
 .table-scroll { overflow-x: auto; }
 .table-scroll .table tbody tr:last-child td { border-bottom: 0; }
 .veh { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+.status-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.seller-suspended { margin-top: 6px; color: var(--color-accent-700); }
 .veh-thumb { width: 60px; flex: none; display: block; border-radius: var(--radius-md); overflow: hidden; }
 .veh-info { min-width: 0; }
 .veh-title { font: 800 14px/1.25 var(--font-heading); }

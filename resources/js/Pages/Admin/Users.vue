@@ -91,7 +91,7 @@ const toggle = (user) => {
                                             <span class="tag" :class="user.is_active ? 'tag-success' : 'tag-neutral'">
                                                 {{ user.is_active ? t('adm.active', 'Active') : t('adm.suspended', 'Suspended') }}
                                             </span>
-                                            <button class="btn btn-secondary btn-sm" @click="toggle(user)">
+                                            <button v-if="user.id !== $page.props.auth.user.id" class="btn btn-secondary btn-sm" @click="toggle(user)">
                                                 {{ user.is_active ? t('adm.suspend', 'Suspend') : t('adm.activate', 'Activate') }}
                                             </button>
                                         </div>

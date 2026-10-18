@@ -13,7 +13,8 @@ class DealerController extends Controller
 {
     public function index(Request $request): Response
     {
-        $dealers = Dealer::withCount(['vehicles' => fn ($q) => $q->where('status', 'active')])
+        $dealers = Dealer::active()
+            ->withCount(['vehicles' => fn ($q) => $q->active()])
             ->when($request->input('q'), fn ($q, $term) => $q->where('name', 'like', "%{$term}%"))
             ->orderByDesc('verified')
             ->orderByDesc('vehicles_count')
@@ -28,6 +29,8 @@ class DealerController extends Controller
 
     public function show(Request $request, Dealer $dealer): Response
     {
+        abort_unless($dealer->user?->is_active || $request->user()?->isStaff(), 404);
+
         $sort = $request->input('sort', 'newest');
 
         $vehicles = Vehicle::active()

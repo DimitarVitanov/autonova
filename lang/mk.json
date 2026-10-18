@@ -20,6 +20,7 @@
     ":name's role updated to :role.": "Улогата на :name е сменета во :role.",
     "User activated.": "Корисникот е активиран.",
     "User suspended.": "Корисникот е суспендиран.",
+    "You cannot suspend your own account.": "Не можеш да го суспендираш својот профил.",
     "“:title” approved and published.": "„:title“ е одобрен и објавен.",
     "“:title” was rejected.": "„:title“ е одбиен.",
     "Does not meet listing guidelines.": "Не ги исполнува правилата за огласи.",
