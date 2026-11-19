@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conversation;
+use App\Models\Message;
+use App\Models\User;
 use App\Models\Vehicle;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
+
+use function Illuminate\Support\defer;
 
 class ConversationController extends Controller
 {
@@ -28,11 +33,12 @@ class ConversationController extends Controller
             ['last_message_at' => now()]
         );
 
-        $conversation->messages()->create([
+        $message = $conversation->messages()->create([
             'sender_id' => $user->id,
             'body' => $data['body'],
         ]);
         $conversation->update(['last_message_at' => now()]);
+        $this->emailRecipient($conversation, $message, $user, $conversation->wasRecentlyCreated);
 
         return redirect()->route('inbox', ['conversation' => $conversation->id])
             ->with('success', __('Message sent to the seller.'));
@@ -48,12 +54,28 @@ class ConversationController extends Controller
             'body' => ['required', 'string', 'max:2000'],
         ]);
 
-        $conversation->messages()->create([
+        $message = $conversation->messages()->create([
             'sender_id' => $user->id,
             'body' => $data['body'],
         ]);
         $conversation->update(['last_message_at' => now()]);
+        $this->emailRecipient($conversation, $message, $user, false);
 
         return back()->with('success', __('Message sent.'));
+    }
+
+    /**
+     * Emails the other side about a new message — once per unread burst, so a
+     * live chat does not flood their inbox. Sent after the response, and a mail
+     * outage never breaks messaging.
+     */
+    private function emailRecipient(Conversation $conversation, Message $message, User $sender, bool $isFirstContact): void
+    {
+        $recipient = $conversation->counterpart($sender);
+        $unreadFromSender = $conversation->messages()->where('sender_id', $sender->id)->whereNull('read_at')->count();
+
+        if ($recipient && $unreadFromSender === 1) {
+            defer(fn () => rescue(fn () => $recipient->notify(new NewMessageNotification($message, $isFirstContact))));
+        }
     }
 }

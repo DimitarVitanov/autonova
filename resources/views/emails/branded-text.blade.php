@@ -1,26 +1,39 @@
+{{-- Plain-text part: raw output on purpose — there is no HTML here to escape for. --}}
 AUTONOVA
 
-{{ $title }}
+{!! $title !!}
 
-@isset($greeting){{ $greeting }}
+@isset($greeting){!! $greeting !!}
 
 @endisset
 @foreach ($lines as $line)
-{{ $line }}
+{!! $line !!}
 
 @endforeach
+@isset($quote)
+"{!! $quote !!}"
+
+@endisset
+@isset($vehicle)
+{!! $vehicle['title'] !!} — {!! $vehicle['price'] !!}
+{!! $vehicle['url'] !!}
+
+@endisset
 @isset($details)
 @foreach ($details as $label => $value)
-{{ $label }}: {{ $value }}
+{!! $label !!}: {!! $value !!}
 @endforeach
 
 @endisset
 @isset($actionUrl)
-{{ $actionText }}: {{ $actionUrl }}
+{!! $actionText !!}: {!! $actionUrl !!}
 
 @endisset
 @foreach ($outro ?? [] as $line)
-{{ $line }}
+{!! $line !!}
 
 @endforeach
-© {{ date('Y') }} AutoNova · {{ url('/') }}
+@if (config('mail.from.address'))
+{!! __('Questions? Write to us at') !!} {!! config('mail.from.address') !!}
+@endif
+© {{ date('Y') }} AutoNova · {!! url('/') !!}

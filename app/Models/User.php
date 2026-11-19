@@ -6,6 +6,7 @@ use App\Notifications\ResetPasswordNotification;
 use App\Notifications\VerifyEmailNotification;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -75,6 +76,12 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     // ---- Branded account emails ---------------------------------------------
+
+    /** Every AutoNova email goes out in Macedonian, whichever language the site was browsed in. */
+    public function preferredLocale(): string
+    {
+        return 'mk';
+    }
 
     public function sendEmailVerificationNotification(): void
     {

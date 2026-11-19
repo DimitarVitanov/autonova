@@ -82,6 +82,22 @@ class AccountEmailsTest extends TestCase
         Notification::assertSentTo($user, PasswordChangedNotification::class);
     }
 
+    public function test_emails_go_out_in_macedonian_even_when_the_site_is_browsed_in_english(): void
+    {
+        Notification::fake();
+        config(['mail.admin_address' => 'owner@example.com']);
+        $inMacedonian = fn ($notification, $channels, $notifiable, $locale) => $locale === 'mk';
+
+        $this->withSession(['locale' => 'en']);
+        $user = $this->register();
+        $this->post('/logout');
+        $this->post('/forgot-password', ['email' => $user->email]);
+
+        Notification::assertSentTo($user, VerifyEmailNotification::class, $inMacedonian);
+        Notification::assertSentTo($user, ResetPasswordNotification::class, $inMacedonian);
+        Notification::assertSentTo(new AnonymousNotifiable, NewRegistrationNotification::class, $inMacedonian);
+    }
+
     public function test_unconfirmed_users_cannot_post_listings_or_message_sellers(): void
     {
         $user = User::factory()->unverified()->create();

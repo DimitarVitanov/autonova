@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Registered::class, function (Registered $e) {
             if ($admin = config('mail.admin_address')) {
-                rescue(fn () => Notification::route('mail', $admin)->notify(new NewRegistrationNotification($e->user)));
+                rescue(fn () => Notification::route('mail', $admin)->notify((new NewRegistrationNotification($e->user))->locale('mk')));
             }
         });
     }

@@ -9,7 +9,9 @@ class BrandedMessage
 {
     /**
      * @param  array{title:string, lines:array<int,string>, kicker?:string, greeting?:string, preheader?:string,
-     *     details?:array<string,string>, actionText?:string, actionUrl?:string, outro?:array<int,string>}  $data
+     *     details?:array<string,string>, quote?:string,
+     *     vehicle?:array{title:string, price:string, meta:string, image:?string, url:string},
+     *     actionText?:string, actionUrl?:string, outro?:array<int,string>}  $data
      */
     public static function make(string $subject, array $data): MailMessage
     {
