@@ -5,6 +5,8 @@
     $font = "'Archivo',Arial,Helvetica,sans-serif";
     $mono = "ui-monospace,'SF Mono',Menlo,Consolas,'Courier New',monospace";
     $contact = config('mail.from.address');
+    // Embedded (cid:) when actually sending, so the logo shows even where remote images are blocked.
+    $mark = isset($message) ? $message->embed(public_path('images/email/mark.png')) : asset('images/email/mark.png');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
@@ -32,7 +34,7 @@
                                             <table role="presentation" cellpadding="0" cellspacing="0">
                                                 <tr>
                                                     <td width="28" height="28" style="background:#ec3013;width:28px;height:28px;">
-                                                        <img src="{{ asset('images/email/mark.png') }}" width="28" height="28" alt="" style="display:block;border:0;width:28px;height:28px;">
+                                                        <img src="{{ $mark }}" width="28" height="28" alt="" style="display:block;border:0;width:28px;height:28px;">
                                                     </td>
                                                     <td style="padding-left:10px;font-family:{{ $font }};font-size:22px;font-weight:900;letter-spacing:-.5px;color:#ffffff;">AUTO<span style="color:#ec3013;">NOVA</span></td>
                                                 </tr>
